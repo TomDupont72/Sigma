@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "../../domain/tree.hpp"
-#include "../../domain/function.hpp"
+#include "domain/tree.hpp"
+#include "domain/function.hpp"
 
 using namespace std;
 

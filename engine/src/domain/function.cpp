@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "tree.hpp"
-#include "function.hpp"
+#include "domain/tree.hpp"
+#include "domain/function.hpp"
 using namespace std;
 
 Plus::Plus(vector<Node *> children) : Node("+", children) {}

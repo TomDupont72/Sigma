@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "tree.hpp"
+#include "domain/tree.hpp"
 using namespace std;
 
 Node::Node(string value, vector<Node *> children)
