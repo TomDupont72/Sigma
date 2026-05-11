@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+
 enum class TokenType
 {
     Number,
@@ -17,3 +19,16 @@ enum class TokenType
     End,
     Invalid
 };
+
+map<char, TokenType> operatorMapping =
+    {
+        {'+', TokenType::Plus},
+        {'-', TokenType::Minus},
+        {'*', TokenType::Multiply},
+        {'/', TokenType::Divide},
+        {'^', TokenType::Power}};
+
+map<char, TokenType> parenMapping =
+    {
+        {'(', TokenType::LeftParen},
+        {')', TokenType::RightParen}};
