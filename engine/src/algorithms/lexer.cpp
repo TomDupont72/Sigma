@@ -1,5 +1,6 @@
 #include "domain/token.hpp"
 #include "types/tokenTypes.hpp"
+#include "algorithms/lexer.hpp"
 #include <vector>
 #include <string>
 #include <cctype>

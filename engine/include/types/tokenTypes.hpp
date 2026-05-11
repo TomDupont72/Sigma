@@ -2,6 +2,8 @@
 
 #include <map>
 
+using namespace std;
+
 enum class TokenType
 {
     Number,
@@ -20,7 +22,7 @@ enum class TokenType
     Invalid
 };
 
-map<char, TokenType> operatorMapping =
+inline map<char, TokenType> operatorMapping =
     {
         {'+', TokenType::Plus},
         {'-', TokenType::Minus},
@@ -28,7 +30,7 @@ map<char, TokenType> operatorMapping =
         {'/', TokenType::Divide},
         {'^', TokenType::Power}};
 
-map<char, TokenType> parenMapping =
+inline map<char, TokenType> parenMapping =
     {
         {'(', TokenType::LeftParen},
         {')', TokenType::RightParen}};

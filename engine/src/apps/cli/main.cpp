@@ -2,19 +2,21 @@
 #include <vector>
 #include "domain/tree.hpp"
 #include "domain/function.hpp"
+#include "algorithms/lexer.hpp"
 
 using namespace std;
 
 int main()
 {
-    Node *a = new Node("a", {});
-    Node *b = new Node("b", {});
+    string input = "a + b + ln(6 + 7)";
 
-    vector<Node *> children = {a, b};
+    vector<Token> res = lexer(input);
 
-    Plus p(children);
-
-    cout << p.display();
+    for (int i = 0; i < res.size(); i++)
+    {
+        cout << res[i].value;
+        cout << " ";
+    }
 
     return 0;
 };
