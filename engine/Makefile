@@ -6,6 +6,7 @@ SRC = \
 	src/domain/tree.cpp \
 	src/domain/function.cpp \
 	src/domain/token.cpp \
+	src/domain/parser.cpp \
 	src/algorithms/lexer.cpp \
 	src/apps/cli/main.cpp
 

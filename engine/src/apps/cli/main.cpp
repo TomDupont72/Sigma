@@ -2,6 +2,7 @@
 #include <vector>
 #include "domain/tree.hpp"
 #include "domain/function.hpp"
+#include "domain/parser.hpp"
 #include "algorithms/lexer.hpp"
 
 using namespace std;
@@ -12,11 +13,11 @@ int main()
 
     vector<Token> res = lexer(input);
 
-    for (int i = 0; i < res.size(); i++)
-    {
-        cout << res[i].value;
-        cout << " ";
-    }
+    Parser parser(res);
+
+    Node * tree = parser.parseExpression();
+
+    cout << (*(*tree).children[0]).value;
 
     return 0;
 };
