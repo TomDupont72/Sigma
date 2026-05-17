@@ -10,7 +10,7 @@ using namespace std;
 
 int main()
 {
-    string input = "a + b + ln((65 + 17) * 3)";
+    string input = "(x+y) *(y+ z)";
 
     vector<Token> res = lexer(input);
 
@@ -34,7 +34,7 @@ int main()
         throw runtime_error("Expression invalide : tokens restants.");
     }
 
-    cout << displayExpression(tree);
+    cout << displayExpression(tree, 0);
 
     return 0;
 };

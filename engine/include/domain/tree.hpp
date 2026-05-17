@@ -9,6 +9,7 @@ class Node
 public:
     string value;
     vector<Node *> children;
+    int priority;
 
-    Node(string value, vector<Node *> children);
+    Node(string value, vector<Node *> children, int priority);
 };

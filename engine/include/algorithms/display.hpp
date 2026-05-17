@@ -3,4 +3,4 @@
 
 using namespace std;
 
-string displayExpression(Node * node);
+string displayExpression(Node * node, int parentPriority);

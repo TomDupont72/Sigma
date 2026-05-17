@@ -27,13 +27,13 @@ Node * Parser::parseExpression()
         Node * right = parseTerm();
 
         if (operation == TokenType::Plus) terms.push_back(right);
-        else terms.push_back(new Node("-", { right }));
+        else terms.push_back(new Node("-", { right }, 1));
 
     }
 
     if (terms.size() == 1) return terms[0];
 
-    return new Node("+", terms);
+    return new Node("+", terms, 1);
 }
 
 Node * Parser::parseTerm()
@@ -50,13 +50,13 @@ Node * Parser::parseTerm()
         Node * right = parseFactor();
 
         if (operation == TokenType::Multiply) terms.push_back(right);
-        else terms.push_back(new Node("/", { right }));
+        else terms.push_back(new Node("/", { right }, 2));
 
     }
 
     if (terms.size() == 1) return terms[0];
 
-    return new Node("*", terms);
+    return new Node("*", terms, 2);
 }
 
 Node * Parser::parseFactor()
@@ -66,7 +66,7 @@ Node * Parser::parseFactor()
         string value = currentToken().value;
         advance();
 
-        return new Node(value, {});
+        return new Node(value, {}, 100);
     }
 
     if (currentToken().type == TokenType::Identifier)
@@ -84,10 +84,10 @@ Node * Parser::parseFactor()
 
             advance();
 
-            return new Node(name, { argument });
+            return new Node(name, { argument }, 100);
         }
 
-        return new Node(name, {});
+        return new Node(name, {}, 100);
     }
 
     if (currentToken().type == TokenType::LeftParen)

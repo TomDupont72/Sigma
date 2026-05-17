@@ -4,7 +4,7 @@
 #include "domain/function.hpp"
 using namespace std;
 
-Plus::Plus(vector<Node *> children) : Node("+", children) {}
+Plus::Plus(vector<Node *> children) : Node("+", children, 1) {}
 
 string Plus::display()
 {

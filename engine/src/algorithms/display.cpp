@@ -1,11 +1,14 @@
 #include "domain/tree.hpp"
 #include "algorithms/utils.hpp"
+#include "algorithms/display.hpp"
 #include<string>
 
 using namespace std;
 
-string displayExpression(Node * node)
+string displayExpression(Node * node, int parentPriority)
 {
+    string res = "";
+
     if (node->children.empty()) return node->value;
 
     if (node->value == "+" || node->value == "*")
@@ -14,16 +17,19 @@ string displayExpression(Node * node)
 
         for (Node * child: node->children)
         {
-            parts.push_back(displayExpression(child));
+            parts.push_back(displayExpression(child, node->priority
+            ));
         }
 
-        return join(parts, " " + node->value + " ");
+        res = join(parts, " " + node->value + " ");
     }
 
     if (node->children.size() == 1)
     {
-        return node->value + "(" + displayExpression(node->children[0]) + ")";
+        res = node->value + displayExpression(node->children[0], node->priority);
     }
 
-    return "";
+    if (node->priority < parentPriority) return "(" + res + ")";
+
+    return res;
 }
