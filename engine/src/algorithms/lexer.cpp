@@ -60,7 +60,7 @@ void parseDigit(string &expression, vector<Token> &res, int &index, int expressi
 
 void parseAlpha(string &expression, vector<Token> &res, int &index, int expressionLength)
 {
-    Token currentToken(TokenType::Number, string(1, expression[index]));
+    Token currentToken(TokenType::Identifier, string(1, expression[index]));
 
     while (++index < expressionLength && isalpha(expression[index]))
     {

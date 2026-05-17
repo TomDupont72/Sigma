@@ -3,6 +3,7 @@
 #include "domain/tree.hpp"
 #include "types/tokenTypes.hpp"
 #include <vector>
+#include <stdexcept>
 
 using namespace std;
 
@@ -60,12 +61,33 @@ Node * Parser::parseTerm()
 
 Node * Parser::parseFactor()
 {
-    if (currentToken().type == TokenType::Number || currentToken().type == TokenType::Identifier)
+    if (currentToken().type == TokenType::Number)
     {
         string value = currentToken().value;
         advance();
 
         return new Node(value, {});
+    }
+
+    if (currentToken().type == TokenType::Identifier)
+    {
+        string name = currentToken().value;
+        advance();
+
+        if (currentToken().type == TokenType::LeftParen)
+        {
+            advance();
+
+            Node * argument = parseExpression();
+
+            if (currentToken().type != TokenType::RightParen) throw runtime_error("Parenthèse fermante manquante.");
+
+            advance();
+
+            return new Node(name, { argument });
+        }
+
+        return new Node(name, {});
     }
 
     if (currentToken().type == TokenType::LeftParen)
@@ -86,10 +108,12 @@ Node * Parser::parseFactor()
 
 Token Parser::currentToken()
 {
+    if (pos >= tokens.size()) return Token(TokenType::End, "");
+
     return tokens[pos];
 }
 
 void Parser::advance()
 {
-    if(pos < tokens.size() - 1) pos++;
+    if (pos < tokens.size()) pos++;
 }

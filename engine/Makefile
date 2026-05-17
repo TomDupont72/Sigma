@@ -8,6 +8,8 @@ SRC = \
 	src/domain/token.cpp \
 	src/domain/parser.cpp \
 	src/algorithms/lexer.cpp \
+	src/algorithms/display.cpp \
+	src/algorithms/utils.cpp \
 	src/apps/cli/main.cpp
 
 OBJ = $(SRC:.cpp=.o)

@@ -8,7 +8,7 @@ class Parser
 {
     private:
         vector<Token> tokens;
-        int pos;
+        size_t pos;
 
     public:
         Parser(const vector<Token>& tokens);
