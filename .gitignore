@@ -30,3 +30,7 @@ build/
 # Uploads / generated (si tu stockes des fichiers localement)
 uploads/
 generated/
+
+# Objects and Dependancy files
+*.o
+*.d
