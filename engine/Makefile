@@ -9,6 +9,7 @@ SRC = \
 	src/domain/parser.cpp \
 	src/algorithms/lexer.cpp \
 	src/algorithms/display.cpp \
+	src/algorithms/simplify.cpp \
 	src/algorithms/utils.cpp \
 	src/apps/cli/main.cpp
 
