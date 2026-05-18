@@ -1,4 +1,5 @@
 #include "algorithms/utils.hpp"
+#include "domain/tree.hpp"
 #include <sstream>
 #include<vector>
 
@@ -44,4 +45,24 @@ string numberToString(float value)
     ostringstream oss;
     oss << value;
     return oss.str();
+}
+
+void printTree(Node* node, string prefix, bool isLast)
+{
+    cout << prefix;
+
+    cout << (isLast ? "\\-- " : "|-- ");
+
+    cout << node->value << endl;
+
+    for (size_t i = 0; i < node->children.size(); i++)
+    {
+        printTree(
+            node->children[i],
+            prefix + (isLast ? "    " : "|   "),
+            i == node->children.size() - 1
+        );
+    }
+
+    cout << "\n";
 }

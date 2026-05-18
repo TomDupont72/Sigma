@@ -30,7 +30,8 @@ Node * simplifyPlus(Node * node)
     {
         if (isNumber(child->value)) sumNumber += stof(child->value);
 
-        if (child->value != "*")
+        if (child->value == "+") resChildren.insert(resChildren.end(), child->children.begin(), child->children.end());
+        else if (child->value != "*")
         {
             if (sumMapping.contains(child->value)) sumMapping[child->value] ++;
             else sumMapping[child->value] = 1;
@@ -39,6 +40,7 @@ Node * simplifyPlus(Node * node)
 
     for (const auto& pair: sumMapping)
     {
+        cout << pair.first + " : " + numberToString(pair.second) + "\n";
         if (pair.second == 1) resChildren.push_back(new Node(pair.first, {}, 100));
         else resChildren.push_back(new Node("*", {new Node(numberToString(pair.second), {}, 100), new Node(pair.first, {}, 100)}, 2));
     }

@@ -1,3 +1,4 @@
+#include "domain/tree.hpp"
 #include <sstream>
 #include<vector>
 
@@ -8,3 +9,5 @@ string join(const vector<string>& values, const string& separator);
 bool isNumber(const string& s);
 
 string numberToString(float value);
+
+void printTree(Node* node, string prefix = "", bool isLast = true);
