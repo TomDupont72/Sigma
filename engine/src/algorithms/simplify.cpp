@@ -86,17 +86,3 @@ void collectSumTerms(Node * node, vector<Node *>& terms)
     }
     else terms.push_back(node);
 }
-
-bool areEquivalent(Node * a, Node * b)
-{
-    if (a->value != b->value) return false;
-
-    if (a->children.size() != b->children.size()) return false;
-
-    for (size_t i = 0; i < a->children.size(); i++)
-    {
-        if (!areEquivalent((a->children)[i], (b->children)[i])) return false;
-    }
-
-    return true;
-}
