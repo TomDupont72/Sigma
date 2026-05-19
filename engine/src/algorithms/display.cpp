@@ -17,8 +17,7 @@ string displayExpression(Node * node, int parentPriority)
 
         for (Node * child: node->children)
         {
-            parts.push_back(displayExpression(child, node->priority
-            ));
+            parts.push_back(displayExpression(child, node->priority));
         }
 
         res = join(parts, " " + node->value + " ");

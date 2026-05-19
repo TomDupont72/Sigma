@@ -31,7 +31,6 @@ Node * simplifyPlus(Node * node)
     vector<Node *> terms;
     collectSumTerms(node, terms);
 
-    map<string, float> coeffMapping;
     map<string, Node *> symbolicMapping;
 
     for (Node * child: terms)
@@ -47,27 +46,28 @@ Node * simplifyPlus(Node * node)
 
             string key = displayExpression(symbolicPart, 0);
 
-            coeffMapping[key] += coeff;
+            sumMapping[key] += coeff;
             symbolicMapping[key] = symbolicPart;
         }
     }
 
     for (const auto& pair: sumMapping)
     {
-        cout << pair.first + " : " + numberToString(pair.second) + "\n";
-        if (pair.second == 1) resChildren.push_back(new Node(pair.first, {}, 100));
-        else resChildren.push_back(new Node("*", {new Node(numberToString(pair.second), {}, 100), new Node(pair.first, {}, 100)}, 2));
-    }
+        if (symbolicMapping.contains(pair.first))
+        {
+            Node * symbolicPart;
+            vector<Node *> nonNumericFactors = (symbolicMapping[pair.first])->children;
 
-    for (const auto& pair: coeffMapping)
-    {
-        Node * symbolicPart;
-        vector<Node *> nonNumericFactors = (symbolicMapping[pair.first])->children;
+            if (nonNumericFactors.size() == 1) symbolicPart = nonNumericFactors[0];
+            else symbolicPart = new Node("*", nonNumericFactors, 2);
 
-        if (nonNumericFactors.size() == 1) symbolicPart = nonNumericFactors[0];
-        else symbolicPart = new Node("*", nonNumericFactors, 2);
-
-        resChildren.push_back(new Node("*", {new Node(numberToString(pair.second), {}, 100), symbolicPart}, 2));
+            resChildren.push_back(new Node("*", {new Node(numberToString(sumMapping[pair.first]), {}, 100), symbolicPart}, 2));
+        }
+        else
+        {
+            if (pair.second == 1) resChildren.push_back(new Node(pair.first, {}, 100));
+            else resChildren.push_back(new Node("*", {new Node(numberToString(pair.second), {}, 100), new Node(pair.first, {}, 100)}, 2));
+        }
     }
 
     if (sumNumber != 0) resChildren.push_back(new Node(numberToString(sumNumber), {}, 100));

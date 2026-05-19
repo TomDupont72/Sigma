@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-    string input = "(a+2 * b)+c +3 * a";
+    string input = "5*a+a";
 
     vector<Token> res = lexer(input);
 
@@ -20,13 +20,13 @@ int main()
 
     Node * tree = parser.parseExpression();
 
-    printTree(tree);
+    // printTree(tree);
 
     cout << displayExpression(tree, 0) + '\n';
 
     tree = simplify(tree);
 
-    printTree(tree);
+    // printTree(tree);
 
     cout << displayExpression(tree, 0);
 
