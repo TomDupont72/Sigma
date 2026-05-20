@@ -96,7 +96,6 @@ tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node
         }
         else
         {
-            cout << "stof on: [" << (child->children[0])->value << "]" << endl;
             float coeff = stof((child->children[0])->value);
             vector<Node *> nonNumericFactors((child->children).begin() + 1, (child->children).end());
 
@@ -128,7 +127,7 @@ tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vect
         {
             number *= stof(child->value);
         }
-        else if (child->value == "^" && isNumber((child->children[1])->value))
+        else if (child->value == "^")
         {
             Node* base = child->children[0];
             Node* exponent = child->children[1];
