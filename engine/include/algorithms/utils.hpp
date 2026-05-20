@@ -1,3 +1,5 @@
+#pragma once
+
 #include "domain/tree.hpp"
 #include <sstream>
 #include<vector>
@@ -11,3 +13,5 @@ bool isNumber(const string& s);
 string numberToString(float value);
 
 void printTree(Node* node, string prefix = "", bool isLast = true);
+
+float operation(float a, float b, string value);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 
 using namespace std;
 
@@ -34,3 +35,22 @@ inline map<char, TokenType> parenMapping =
     {
         {'(', TokenType::LeftParen},
         {')', TokenType::RightParen}};
+
+inline map<string, string> nextValue =
+    {
+        {"+", "*"},
+        {"*", "^"}
+    };
+
+inline map<string, string> previousValue =
+    {
+        {"*", "+"},
+        {"^", "*"}
+    };
+
+inline map<string, string> neutralElement =
+{
+    {"+", "0"},
+    {"*", "1"},
+    {"^", "1"}
+};

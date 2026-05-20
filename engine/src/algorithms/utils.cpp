@@ -66,3 +66,12 @@ void printTree(Node* node, string prefix, bool isLast)
 
     cout << "\n";
 }
+
+float operation(float a, float b, string value)
+{
+    if (value == "+") return a + b;
+
+    if (value == "*") return a * b;
+
+    return 0;
+}

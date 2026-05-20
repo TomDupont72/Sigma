@@ -2,14 +2,13 @@
 
 #include <iostream>
 #include <vector>
-using namespace std;
+#include <string>
 
 class Node
 {
-public:
-    string value;
-    vector<Node *> children;
-    int priority;
+    public:
+        std::string value;
+        std::vector<Node *> children;
 
-    Node(string value, vector<Node *> children, int priority);
+        Node(std::string value, std::vector<Node *> children);
 };

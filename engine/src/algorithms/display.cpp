@@ -1,6 +1,7 @@
 #include "domain/tree.hpp"
 #include "algorithms/utils.hpp"
 #include "algorithms/display.hpp"
+#include "types/tokenTypes.hpp"
 #include<string>
 
 using namespace std;
@@ -17,18 +18,31 @@ string displayExpression(Node * node, int parentPriority)
 
         for (Node * child: node->children)
         {
-            parts.push_back(displayExpression(child, node->priority));
+            if (child->children.empty() && child->value == neutralElement[node->value]) continue;
+            parts.push_back(displayExpression(child, priority(node)));
         }
 
+        if (parts.empty()) return neutralElement[node->value];
         res = join(parts, " " + node->value + " ");
     }
 
     if (node->children.size() == 1)
     {
-        res = node->value + displayExpression(node->children[0], node->priority);
+        res = node->value + "(" + displayExpression(node->children[0], 0) + ")";
     }
 
-    if (node->priority < parentPriority) return "(" + res + ")";
+    if (priority(node) < parentPriority) return "(" + res + ")";
 
     return res;
+}
+
+int priority(Node * node)
+{
+    if (node->value == "+") return 1;
+
+    if (node -> value == "*") return 2;
+
+    if (node -> value == "^") return 3;
+
+    return 100;
 }
