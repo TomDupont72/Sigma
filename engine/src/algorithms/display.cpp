@@ -12,7 +12,7 @@ string displayExpression(Node * node, int parentPriority)
 
     if (node->children.empty()) return node->value;
 
-    if (node->value == "+" || node->value == "*")
+    if (node->value == "+")
     {
         vector<string> parts;
 
@@ -23,7 +23,29 @@ string displayExpression(Node * node, int parentPriority)
         }
 
         if (parts.empty()) return neutralElement[node->value];
-        res = join(parts, " " + node->value + " ");
+        res = join(parts, "" + node->value + "");
+    }
+
+    if (node->value == "*")
+    {
+        vector<string> parts;
+
+        for (Node * child: node->children)
+        {
+            if (child->children.empty() && child->value == neutralElement[node->value]) continue;
+            parts.push_back(displayExpression(child, priority(node)));
+        }
+
+        if (parts.empty()) return neutralElement[node->value];
+        res = join(parts, "");
+    }
+
+    if (node->value == "^")
+    {
+        string base = displayExpression(node->children[0], priority(node));
+        string exponent = displayExpression(node->children[1], priority(node));
+
+        res = base + "^{" + exponent + "}";
     }
 
     if (node->children.size() == 1)

@@ -48,11 +48,20 @@ Node * simplify(Node * node)
 Node * simplifyOperation(Node * node, string value)
 {
     vector<Node *> terms;
+    vector<Node *> resChildren;
+
     collectTerms(node, terms, value);
 
-    auto [mapping, symbolicMapping, number] = createMappings(terms, nextValue[value]);
-
-    vector<Node *> resChildren = constructChildren(mapping, symbolicMapping, number, nextValue[value]);
+    if (node->value == "+")
+    {
+        auto [mapping, symbolicMapping, number] = createMappings(terms, nextValue[value]);
+        resChildren = constructChildren(mapping, symbolicMapping, number, nextValue[value]);
+    }
+    else
+    {
+        auto [mapping, symbolicMapping, number] = createProductMappings(terms, nextValue[value]);
+        resChildren = constructPowerChildren(mapping, symbolicMapping, number);
+    }
 
     if (resChildren.size() == 1) node = resChildren[0];
     else node->children = resChildren;
@@ -71,7 +80,7 @@ void collectTerms(Node * node, vector<Node *>& terms, string value)
 
 tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node *> terms, string value)
 {
-    float number = stof(neutralElement[previousValue[value]]);
+    float number = 0;
 
     map<string, float> mapping;
     map<string, Node *> symbolicMapping;
@@ -87,6 +96,7 @@ tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node
         }
         else
         {
+            cout << "stof on: [" << (child->children[0])->value << "]" << endl;
             float coeff = stof((child->children[0])->value);
             vector<Node *> nonNumericFactors((child->children).begin() + 1, (child->children).end());
 
@@ -99,6 +109,39 @@ tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node
 
             mapping[key] += coeff;
             symbolicMapping[key] = symbolicPart;
+        }
+    }
+
+    return {mapping, symbolicMapping, number};
+}
+
+tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vector<Node *> terms, string value)
+{
+    float number = 1;
+
+    map<string, float> mapping;
+    map<string, Node *> symbolicMapping;
+
+    for (Node* child : terms)
+    {
+        if (isNumber(child->value))
+        {
+            number *= stof(child->value);
+        }
+        else if (child->value == "^" && isNumber((child->children[1])->value))
+        {
+            Node* base = child->children[0];
+            Node* exponent = child->children[1];
+
+            string key = displayExpression(base, 0);
+            mapping[key] += stof(exponent->value);
+            symbolicMapping[key] = base;
+        }
+        else
+        {
+            string key = displayExpression(child, 0);
+            mapping[key] += 1;
+            symbolicMapping[key] = child;
         }
     }
 
@@ -124,6 +167,31 @@ vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *>
         {
             if (pair.second == 1) resChildren.push_back(new Node(pair.first, {}));
             else resChildren.push_back(new Node(value, {new Node(numberToString(pair.second), {}), new Node(pair.first, {})}));
+        }
+    }
+
+    return resChildren;
+}
+
+vector<Node *> constructPowerChildren(map<string, float> mapping, map<string, Node *> symbolicMapping, float number)
+{
+    vector<Node *> resChildren;
+
+    resChildren.push_back(new Node(numberToString(number), {}));
+
+    for (const auto& pair: mapping)
+    {
+        if (symbolicMapping.contains(pair.first))
+        {
+            Node * symbolicPart = symbolicMapping[pair.first];
+
+            if (pair.second == 1) resChildren.push_back(symbolicPart);
+            else resChildren.push_back(new Node("^", {symbolicPart, new Node(numberToString(pair.second), {})}));
+        }
+        else
+        {
+            if (pair.second == 1) resChildren.push_back(new Node(pair.first, {}));
+            else resChildren.push_back(new Node("^", {new Node(pair.first, {}), new Node(numberToString(pair.second), {})}));
         }
     }
 
