@@ -113,8 +113,6 @@ vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *>
 
     for (const auto& pair: mapping)
     {
-        // if (pair.second == 0 && value == "*") continue; // Généraliser
-
         if (symbolicMapping.contains(pair.first))
         {
             Node * symbolicPart = symbolicMapping[pair.first];

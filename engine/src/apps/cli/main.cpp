@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-    string input = "ln(1) + 0*(x + y) + 2*x - x + 3*y*x + 4*x*y + (5 + 0)";
+    string input = "x^(x^y)*y*y";
 
     vector<Token> res = lexer(input);
 

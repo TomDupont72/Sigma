@@ -15,6 +15,7 @@ class Parser
 
         Node* parseExpression();
         Node* parseTerm();
+        Node* parsePower();
         Node* parseFactor();
 
         Token currentToken();

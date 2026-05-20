@@ -40,14 +40,14 @@ Node * Parser::parseTerm()
 {
     vector<Node *> terms;
 
-    terms.push_back(parseFactor());
+    terms.push_back(parsePower());
 
     while (currentToken().type == TokenType::Multiply || currentToken().type == TokenType::Divide)
     {
         TokenType operation = currentToken().type;
         advance();
 
-        Node * right = parseFactor();
+        Node * right = parsePower();
 
         if (operation == TokenType::Multiply) terms.push_back(right);
         else terms.push_back(new Node("/", { right }));
@@ -57,6 +57,22 @@ Node * Parser::parseTerm()
     if (terms.size() == 1) return terms[0];
 
     return new Node("*", terms);
+}
+
+Node * Parser::parsePower()
+{
+    Node* left = parseFactor();
+
+    while (currentToken().type == TokenType::Power)
+    {
+        advance();
+
+        Node* right = parseFactor();
+
+        left = new Node("^", { left, right });
+    }
+
+    return left;
 }
 
 Node * Parser::parseFactor()
