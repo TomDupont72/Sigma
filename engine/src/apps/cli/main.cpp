@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-    string input = "0.5+0.1";
+    string input = "2.5*x + 3.5*x + 1.5*y + y + 0.5 + 1.5 + ln(0 + z)";
 
     vector<Token> res = lexer(input);
 

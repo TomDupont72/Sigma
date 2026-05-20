@@ -48,9 +48,11 @@ vector<Token> lexer(string expression)
 void parseDigit(string &expression, vector<Token> &res, int &index, int expressionLength)
 {
     Token currentToken(TokenType::Number, string(1, expression[index]));
+    bool dotSeen = false;
 
-    while (++index < expressionLength && isdigit(expression[index]))
+    while ((++index < expressionLength && isdigit(expression[index])) || (expression[index] == '.' && !dotSeen))
     {
+        if (expression[index] == '.') dotSeen = true;
         currentToken.value += expression[index];
     }
 
