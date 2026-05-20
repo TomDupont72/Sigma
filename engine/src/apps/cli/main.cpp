@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-    string input = "2.5*x + 3.5*x + 1.5*y + y + 0.5 + 1.5 + ln(0 + z)";
+    string input = "ln(1) + 0*(x + y) + 2*x - x + 3*y*x + 4*x*y + (5 + 0)";
 
     vector<Token> res = lexer(input);
 
@@ -24,7 +24,7 @@ int main()
 
     cout << displayExpression(tree, 0) + '\n';
 
-    tree = simplify(tree);
+    tree = normalize(tree);
 
     printTree(tree);
 

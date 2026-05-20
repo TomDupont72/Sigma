@@ -22,13 +22,15 @@ string join(const vector<string>& values, const string& separator)
 bool isNumber(const string& s)
 {
     bool dotSeen = false;
+    bool firstChar = true;
 
     if (s.empty()) return false;
 
     for (char c : s)
     {
-        if (c == '.')
+        if (c == '.' || (c == '-' && firstChar))
         {
+            firstChar = false;
             if (dotSeen)
                 return false;
 

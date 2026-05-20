@@ -6,6 +6,29 @@
 #include<vector>
 #include<map>
 
+int MAX_ITERATION = 100;
+
+Node * normalize(Node * node)
+{
+    Node * current = node;
+    int current_iteration = 1;
+
+    while(true)
+    {
+        string before = displayExpression(current, 0);
+
+        current = simplify(current);
+        current = applyRewriteRules(current);
+
+        string after = displayExpression(current, 0);
+
+        if (before == after) break;
+
+        current_iteration++;
+    }
+
+    return current;
+}
 
 Node * simplify(Node * node)
 {
@@ -90,6 +113,8 @@ vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *>
 
     for (const auto& pair: mapping)
     {
+        // if (pair.second == 0 && value == "*") continue; // Généraliser
+
         if (symbolicMapping.contains(pair.first))
         {
             Node * symbolicPart = symbolicMapping[pair.first];
@@ -105,4 +130,21 @@ vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *>
     }
 
     return resChildren;
+}
+
+Node * applyRewriteRules(Node * node)
+{
+    for (Node*& child : node->children) child = applyRewriteRules(child);
+
+    if (node->value == "*")
+    {
+        if((node->children[0])->value == "0") return new Node("0", {});
+    }
+
+    if (node->value == "ln")
+    {
+        if((node->children[0])->value == "1") return new Node("0", {});
+    }
+
+    return node;
 }

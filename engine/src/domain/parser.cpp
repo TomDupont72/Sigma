@@ -27,7 +27,7 @@ Node * Parser::parseExpression()
         Node * right = parseTerm();
 
         if (operation == TokenType::Plus) terms.push_back(right);
-        else terms.push_back(new Node("-", { right }));
+        else terms.push_back(new Node("*", { new Node("-1", {}), right }));
 
     }
 
