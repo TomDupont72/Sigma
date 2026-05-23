@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-    string input = "x * y / (z + x)";
+    string input = "((x^3/x^2) + (2*x*y + 3*y*x) + 1/(x*x*x*x)^2 + ln(1) + 0*(a+b) + ((2+3)-1) + (4*x-2*x) + (1/(x^2)^3) + (x-x))";
 
     vector<Token> res = lexer(input);
 

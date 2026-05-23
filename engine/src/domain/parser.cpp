@@ -69,7 +69,7 @@ Node * Parser::parsePower()
 
         Node* right = parseFactor();
 
-        left = new Node("^", { left, right });
+        return new Node("^", { left, right });
     }
 
     return left;

@@ -13,6 +13,8 @@ Node * simplify(Node * node);
 
 Node * simplifyOperation(Node * node, string value);
 
+Node* simplifyPower(Node* node);
+
 void collectTerms(Node * node, vector<Node *>& terms, string value);
 
 tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node *> terms, string value);

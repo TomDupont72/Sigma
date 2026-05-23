@@ -5,6 +5,7 @@
 #include "types/tokenTypes.hpp"
 #include<vector>
 #include<map>
+#include <cmath>
 
 int MAX_ITERATION = 100;
 
@@ -40,7 +41,9 @@ Node * simplify(Node * node)
 
     node->children = simplifiedChildren;
 
-    if (node->value == "+" || node->value == "*") node = simplifyOperation(node,node->value);
+    if (node->value == "+" || node->value == "*") node = simplifyOperation(node, node->value);
+
+    if (node->value == "^") node = simplifyPower(node);
 
     return node;
 }
@@ -65,6 +68,44 @@ Node * simplifyOperation(Node * node, string value)
 
     if (resChildren.size() == 1) node = resChildren[0];
     else node->children = resChildren;
+
+    return node;
+}
+
+Node* simplifyPower(Node* node)
+{
+    if (node->children.size() != 2) return node;
+
+    Node* base = node->children[0];
+    Node* exponent = node->children[1];
+
+    if (exponent->children.empty() && exponent->value == "0") return new Node("1", {});
+
+    if (exponent->children.empty() && exponent->value == "1") return base;
+
+    if (base->children.empty() && exponent->children.empty() && isNumber(base->value) && isNumber(exponent->value))
+    {
+        float result = pow(stof(base->value), stof(exponent->value));
+
+        return new Node(numberToString(result), {});
+    }
+
+    if (base->value == "^" && base->children.size() == 2 && base->children[1]->children.empty() && exponent->children.empty() && isNumber(base->children[1]->value) && isNumber(exponent->value))
+    {
+        float a = stof(base->children[1]->value);
+        float b = stof(exponent->value);
+
+        return new Node("^", { base->children[0], new Node(numberToString(a * b), {}) });
+    }
+
+    if (base->value == "^" && base->children.size() == 2 && base->children[1]->children.empty() && exponent->children.empty() && isNumber(base->children[1]->value) && isNumber(exponent->value)
+    )
+    {
+        float a = stof(base->children[1]->value);
+        float b = stof(exponent->value);
+
+        return new Node("^", { base->children[0], new Node(numberToString(a * b), {}) });
+    }
 
     return node;
 }
@@ -204,6 +245,11 @@ Node * applyRewriteRules(Node * node)
     if (node->value == "*")
     {
         if((node->children[0])->value == "0") return new Node("0", {});
+    }
+
+    if (node->value == "^")
+    {
+        if((node->children[1])->value == "0") return new Node("1", {});
     }
 
     if (node->value == "ln")
