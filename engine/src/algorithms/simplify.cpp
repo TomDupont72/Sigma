@@ -41,9 +41,7 @@ Node * simplify(Node * node)
 
     node->children = simplifiedChildren;
 
-    if (node->value == "+" || node->value == "*") node = simplifyOperation(node, node->value);
-
-    if (node->value == "^") node = simplifyPower(node);
+    if (node->value == "+" || node->value == "*" || node->value == "^") node = simplifyOperation(node, node->value);
 
     return node;
 }
@@ -60,10 +58,20 @@ Node * simplifyOperation(Node * node, string value)
         auto [mapping, symbolicMapping, number] = createMappings(terms, nextValue[value]);
         resChildren = constructChildren(mapping, symbolicMapping, number, nextValue[value]);
     }
-    else
+
+    if (node->value == "*")
     {
         auto [mapping, symbolicMapping, number] = createProductMappings(terms, nextValue[value]);
         resChildren = constructPowerChildren(mapping, symbolicMapping, number);
+    }
+
+    if (node->value == "^")
+    {
+        if (node->children.size() != 2) return node;
+
+        auto [base, exponent] = createPowerMapping(node);
+
+        return constructPower(base, exponent);
     }
 
     if (resChildren.size() == 1) node = resChildren[0];
@@ -72,43 +80,7 @@ Node * simplifyOperation(Node * node, string value)
     return node;
 }
 
-Node* simplifyPower(Node* node)
-{
-    if (node->children.size() != 2) return node;
 
-    Node* base = node->children[0];
-    Node* exponent = node->children[1];
-
-    if (exponent->children.empty() && exponent->value == "0") return new Node("1", {});
-
-    if (exponent->children.empty() && exponent->value == "1") return base;
-
-    if (base->children.empty() && exponent->children.empty() && isNumber(base->value) && isNumber(exponent->value))
-    {
-        float result = pow(stof(base->value), stof(exponent->value));
-
-        return new Node(numberToString(result), {});
-    }
-
-    if (base->value == "^" && base->children.size() == 2 && base->children[1]->children.empty() && exponent->children.empty() && isNumber(base->children[1]->value) && isNumber(exponent->value))
-    {
-        float a = stof(base->children[1]->value);
-        float b = stof(exponent->value);
-
-        return new Node("^", { base->children[0], new Node(numberToString(a * b), {}) });
-    }
-
-    if (base->value == "^" && base->children.size() == 2 && base->children[1]->children.empty() && exponent->children.empty() && isNumber(base->children[1]->value) && isNumber(exponent->value)
-    )
-    {
-        float a = stof(base->children[1]->value);
-        float b = stof(exponent->value);
-
-        return new Node("^", { base->children[0], new Node(numberToString(a * b), {}) });
-    }
-
-    return node;
-}
 
 void collectTerms(Node * node, vector<Node *>& terms, string value)
 {
@@ -188,6 +160,31 @@ tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vect
     return {mapping, symbolicMapping, number};
 }
 
+tuple<Node*, float> createPowerMapping(Node* node)
+{
+    Node* base = node->children[0];
+    Node* exponent = node->children[1];
+
+    float power = 1;
+
+    if (exponent->children.empty() && isNumber(exponent->value))
+    {
+        power *= stof(exponent->value);
+    }
+    else
+    {
+        return {base, 1};
+    }
+
+    while (base->value == "^" && base->children.size() == 2 && base->children[1]->children.empty() && isNumber(base->children[1]->value))
+    {
+        power *= stof(base->children[1]->value);
+        base = base->children[0];
+    }
+
+    return {base, power};
+}
+
 vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *> symbolicMapping, float number, string value)
 {
     vector<Node *> resChildren;
@@ -236,6 +233,40 @@ vector<Node *> constructPowerChildren(map<string, float> mapping, map<string, No
     }
 
     return resChildren;
+}
+
+Node* constructPower(Node* base, float exponent)
+{
+    if (exponent == 0)
+        return new Node("1", {});
+
+    if (exponent == 1)
+        return base;
+
+    if (base->value == "*")
+    {
+        vector<Node *> resChildren;
+
+        for (Node * child: base->children)
+        {
+            if (child->children.empty() && child->value == neutralElement[base->value]) continue;
+
+            if (child->value == "^" && child->children.size() == 2 && child->children[1]->children.empty() && isNumber(child->children[1]->value))
+            {
+                float childExponent = stof(child->children[1]->value);
+                resChildren.push_back(constructPower(child->children[0], childExponent * exponent));
+            }
+            else resChildren.push_back(constructPower(child, exponent));
+        }
+
+        if (resChildren.empty()) return new Node("1", {});
+
+        if (resChildren.size() == 1) return resChildren[0];
+
+        return new Node("*", resChildren);
+    }
+
+    return new Node("^",{ base, new Node(numberToString(exponent), {})});
 }
 
 Node * applyRewriteRules(Node * node)
