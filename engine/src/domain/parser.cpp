@@ -50,7 +50,7 @@ Node * Parser::parseTerm()
         Node * right = parsePower();
 
         if (operation == TokenType::Multiply) terms.push_back(right);
-        else terms.push_back(new Node("/", { right }));
+        else terms.push_back(new Node("^", { right, new Node("-1", {}) }));
 
     }
 
