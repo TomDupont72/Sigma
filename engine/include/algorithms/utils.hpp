@@ -8,6 +8,8 @@ using namespace std;
 
 string join(const vector<string>& values, const string& separator);
 
+string joinSum(const vector<string>& parts);
+
 bool isNumber(const string& s);
 
 string numberToString(float value);

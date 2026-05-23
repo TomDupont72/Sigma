@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-    string input = "1 / x";
+    string input = "1 - x";
 
     vector<Token> res = lexer(input);
 

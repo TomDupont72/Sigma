@@ -19,11 +19,21 @@ string displayExpression(Node * node, int parentPriority)
         for (Node * child: node->children)
         {
             if (child->children.empty() && child->value == neutralElement[node->value]) continue;
-            parts.push_back(displayExpression(child, priority(node)));
+
+            bool isNegativeTerm = child->value == "*" && !child->children.empty() && child->children[0]->value == "-1";
+
+            if (isNegativeTerm)
+            {
+                vector <Node *> rest(child->children.begin() + 1, child->children.end());
+                Node* positivePart = rest.size() == 1 ? rest[0] : new Node("*", rest);
+
+                parts.push_back("-" + displayExpression(positivePart, priority(node)));
+            }
+            else parts.push_back(displayExpression(child, priority(node)));
         }
 
         if (parts.empty()) return neutralElement[node->value];
-        res = join(parts, "" + node->value + "");
+        res = joinSum(parts);
     }
 
     if (node->value == "*")

@@ -19,6 +19,29 @@ string join(const vector<string>& values, const string& separator)
     return ss.str();
 }
 
+string joinSum(const vector<string>& parts)
+{
+    string res = "";
+
+    for (size_t i = 0; i < parts.size(); i++)
+    {
+        if (i == 0)
+        {
+            res += parts[i];
+        }
+        else if (!parts[i].empty() && parts[i][0] == '-')
+        {
+            res += parts[i];
+        }
+        else
+        {
+            res += "+" + parts[i];
+        }
+    }
+
+    return res;
+}
+
 bool isNumber(const string& s)
 {
     bool dotSeen = false;
