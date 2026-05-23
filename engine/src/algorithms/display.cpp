@@ -50,7 +50,7 @@ string displayExpression(Node * node, int parentPriority)
             if (isInverseTerm)
             {
                 Node* denominator = child->children[0];
-                denominatorParts.push_back(displayExpression(denominator, priority(node)));
+                denominatorParts.push_back(displayExpression(denominator, 0));
             }
             else
             {
