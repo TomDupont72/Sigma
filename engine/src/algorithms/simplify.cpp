@@ -127,7 +127,7 @@ tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vect
         {
             number *= stof(child->value);
         }
-        else if (child->value == "^")
+        else if (child->value == "^" )
         {
             Node* base = child->children[0];
             Node* exponent = child->children[1];

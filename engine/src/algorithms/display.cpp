@@ -38,16 +38,33 @@ string displayExpression(Node * node, int parentPriority)
 
     if (node->value == "*")
     {
-        vector<string> parts;
+        vector<string> numeratorParts;
+        vector<string> denominatorParts;
 
-        for (Node * child: node->children)
+        for (Node* child : node->children)
         {
-            if (child->children.empty() && child->value == neutralElement[node->value]) continue;
-            parts.push_back(displayExpression(child, priority(node)));
+            if (child->children.empty() && child->value == neutralElement[node->value])
+                continue;
+
+            bool isInverseTerm = child->value == "^" && child->children.size() == 2 && child->children[1]->children.empty() && child->children[1]->value == "-1";
+            if (isInverseTerm)
+            {
+                Node* denominator = child->children[0];
+                denominatorParts.push_back(displayExpression(denominator, priority(node)));
+            }
+            else
+            {
+                numeratorParts.push_back(displayExpression(child, priority(node)));
+            }
         }
 
-        if (parts.empty()) return neutralElement[node->value];
-        res = join(parts, "");
+        if (numeratorParts.empty())
+            numeratorParts.push_back("1");
+
+        if (denominatorParts.empty())
+            res = join(numeratorParts, "");
+        else
+            res = "\\frac{" + join(numeratorParts, "") + "}{" + join(denominatorParts, "") + "}";
     }
 
     if (node->value == "^")
