@@ -46,11 +46,14 @@ string displayExpression(Node * node, int parentPriority)
             if (child->children.empty() && child->value == neutralElement[node->value])
                 continue;
 
-            bool isInverseTerm = child->value == "^" && child->children.size() == 2 && child->children[1]->children.empty() && child->children[1]->value == "-1";
+            bool isInverseTerm = child->value == "^" && child->children.size() == 2 && child->children[1]->children.empty() && isNumber(child->children[1]->value) && stof(child->children[1]->value) < 0;
             if (isInverseTerm)
             {
-                Node* denominator = child->children[0];
-                denominatorParts.push_back(displayExpression(denominator, 0));
+                Node* base = child->children[0];
+                float exponent = -stof(child->children[1]->value);
+
+                if (exponent == 1) denominatorParts.push_back(displayExpression(base, 0));
+                else denominatorParts.push_back(displayExpression(new Node("^", {base, new Node(numberToString(exponent), {})}), 0));
             }
             else
             {
@@ -69,10 +72,21 @@ string displayExpression(Node * node, int parentPriority)
 
     if (node->value == "^")
     {
-        string base = displayExpression(node->children[0], priority(node));
-        string exponent = displayExpression(node->children[1], priority(node));
+        if (node->children[1]->children.empty() && isNumber(node->children[1]->value) && stof(node->children[1]->value) < 0)
+        {
+            Node* base = node->children[0];
+            float exponent = -stof(node->children[1]->value);
 
-        res = base + "^{" + exponent + "}";
+            if (exponent == 1) res = "\\frac{1}{" + displayExpression(base, 0) + "}";
+            else res = "\\frac{1}{" + displayExpression(new Node("^", {base, new Node(numberToString(exponent), {})}), 0) + "}";
+        }
+        else
+        {
+            string base = displayExpression(node->children[0], priority(node));
+            string exponent = displayExpression(node->children[1], priority(node));
+
+            res = base + "^{" + exponent + "}";
+        }
     }
 
     if (node->children.size() == 1)
