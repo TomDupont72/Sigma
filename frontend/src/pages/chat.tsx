@@ -2,16 +2,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useChat } from "@/hooks/useChat";
+import { Trash2 } from "lucide-react";
 
 export default function Chat() {
     const { cells, setCells } = useChat();
 
     return (
         <main className="min-h-dvh flex flex-col items-center gap-6 p-6">
-            {cells.map((cell) => (
-                <Card key={cell.name} className="w-5/10">
+            {Object.entries(cells).map(([key, cell]) => (
+                <Card key={key} className="relative w-5/10">
+                    <Button
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() =>
+                            setCells((prev) => {
+                                const next = { ...prev };
+                                delete next[key];
+                                return next;
+                            })
+                        }
+                    >
+                        <Trash2 />
+                    </Button>
                     <CardHeader>
-                        <h1 className="font-bold text-xl">{cell.name}</h1>
+                        <h1 className="font-bold text-xl">{key}</h1>
                     </CardHeader>
                     <CardContent>
                         <div className="flex flex-row gap-4">
@@ -25,16 +40,15 @@ export default function Chat() {
             <Button
                 size="icon"
                 onClick={() =>
-                    setCells((last) => [
-                        ...last,
-                        {
-                            name: `Calcul - ${last.length + 1}`,
+                    setCells((prev) => ({
+                        ...prev,
+                        [`Calcul - ${Object.keys(prev).length + 1}`]: {
                             expression: "",
                             latexExpression: "",
                             result: "",
                             latexResult: "",
                         },
-                    ])
+                    }))
                 }
             >
                 +
