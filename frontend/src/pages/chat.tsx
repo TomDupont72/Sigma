@@ -5,7 +5,7 @@ import { useChat } from "@/hooks/useChat";
 import { Trash2 } from "lucide-react";
 
 export default function Chat() {
-    const { cells, setCells } = useChat();
+    const { cells, setCells, addCell, deleteCell } = useChat();
 
     return (
         <main className="min-h-dvh flex flex-col items-center gap-6 p-6">
@@ -16,11 +16,7 @@ export default function Chat() {
                         size="icon"
                         className="absolute top-2 right-2"
                         onClick={() =>
-                            setCells((prev) => {
-                                const next = { ...prev };
-                                delete next[key];
-                                return next;
-                            })
+                    deleteCell(key)
                         }
                     >
                         <Trash2 />
@@ -39,17 +35,7 @@ export default function Chat() {
 
             <Button
                 size="icon"
-                onClick={() =>
-                    setCells((prev) => ({
-                        ...prev,
-                        [`Calcul - ${Object.keys(prev).length + 1}`]: {
-                            expression: "",
-                            latexExpression: "",
-                            result: "",
-                            latexResult: "",
-                        },
-                    }))
-                }
+                onClick={addCell}
             >
                 +
             </Button>
