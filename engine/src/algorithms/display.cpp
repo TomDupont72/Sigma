@@ -2,37 +2,41 @@
 #include "algorithms/utils.hpp"
 #include "algorithms/display.hpp"
 #include "types/tokenTypes.hpp"
-#include<string>
+#include <string>
 
 using namespace std;
 
-string displayExpression(Node * node, int parentPriority)
+string displayExpression(Node *node, int parentPriority)
 {
     string res = "";
 
-    if (node->children.empty()) return node->value;
+    if (node->children.empty())
+        return node->value;
 
     if (node->value == "+")
     {
         vector<string> parts;
 
-        for (Node * child: node->children)
+        for (Node *child : node->children)
         {
-            if (child->children.empty() && child->value == neutralElement[node->value]) continue;
+            if (child->children.empty() && child->value == neutralElement[node->value])
+                continue;
 
             bool isNegativeTerm = child->value == "*" && !child->children.empty() && child->children[0]->value == "-1";
 
             if (isNegativeTerm)
             {
-                vector <Node *> rest(child->children.begin() + 1, child->children.end());
-                Node* positivePart = rest.size() == 1 ? rest[0] : new Node("*", rest);
+                vector<Node *> rest(child->children.begin() + 1, child->children.end());
+                Node *positivePart = rest.size() == 1 ? rest[0] : new Node("*", rest);
 
                 parts.push_back("-" + displayExpression(positivePart, priority(node)));
             }
-            else parts.push_back(displayExpression(child, priority(node)));
+            else
+                parts.push_back(displayExpression(child, priority(node)));
         }
 
-        if (parts.empty()) return neutralElement[node->value];
+        if (parts.empty())
+            return neutralElement[node->value];
         res = joinSum(parts);
     }
 
@@ -41,7 +45,7 @@ string displayExpression(Node * node, int parentPriority)
         vector<string> numeratorParts;
         vector<string> denominatorParts;
 
-        for (Node* child : node->children)
+        for (Node *child : node->children)
         {
             if (child->children.empty() && child->value == neutralElement[node->value])
                 continue;
@@ -49,11 +53,13 @@ string displayExpression(Node * node, int parentPriority)
             bool isInverseTerm = child->value == "^" && child->children.size() == 2 && child->children[1]->children.empty() && isNumber(child->children[1]->value) && stof(child->children[1]->value) < 0;
             if (isInverseTerm)
             {
-                Node* base = child->children[0];
+                Node *base = child->children[0];
                 float exponent = -stof(child->children[1]->value);
 
-                if (exponent == 1) denominatorParts.push_back(displayExpression(base, 0));
-                else denominatorParts.push_back(displayExpression(new Node("^", {base, new Node(numberToString(exponent), {})}), 0));
+                if (exponent == 1)
+                    denominatorParts.push_back(displayExpression(base, 0));
+                else
+                    denominatorParts.push_back(displayExpression(new Node("^", {base, new Node(numberToString(exponent), {})}), 0));
             }
             else
             {
@@ -67,18 +73,20 @@ string displayExpression(Node * node, int parentPriority)
         if (denominatorParts.empty())
             res = join(numeratorParts, "");
         else
-            res = "\\frac{" + join(numeratorParts, "") + "}{" + join(denominatorParts, "") + "}";
+            res = "\\displaystyle\\frac{" + join(numeratorParts, "") + "}{" + join(denominatorParts, "") + "}";
     }
 
     if (node->value == "^")
     {
         if (node->children[1]->children.empty() && isNumber(node->children[1]->value) && stof(node->children[1]->value) < 0)
         {
-            Node* base = node->children[0];
+            Node *base = node->children[0];
             float exponent = -stof(node->children[1]->value);
 
-            if (exponent == 1) res = "\\frac{1}{" + displayExpression(base, 0) + "}";
-            else res = "\\frac{1}{" + displayExpression(new Node("^", {base, new Node(numberToString(exponent), {})}), 0) + "}";
+            if (exponent == 1)
+                res = "\\displaystyle\\frac{1}{" + displayExpression(base, 0) + "}";
+            else
+                res = "\\displaystyle\\frac{1}{" + displayExpression(new Node("^", {base, new Node(numberToString(exponent), {})}), 0) + "}";
         }
         else
         {
@@ -91,21 +99,25 @@ string displayExpression(Node * node, int parentPriority)
 
     if (node->children.size() == 1)
     {
-        res = node->value + "(" + displayExpression(node->children[0], 0) + ")";
+        res = node->value + "\\left(" + displayExpression(node->children[0], 0) + "\\right)";
     }
 
-    if (priority(node) < parentPriority) return "(" + res + ")";
+    if (priority(node) < parentPriority)
+        return "\\left(" + res + "\\right)";
 
     return res;
 }
 
-int priority(Node * node)
+int priority(Node *node)
 {
-    if (node->value == "+") return 1;
+    if (node->value == "+")
+        return 1;
 
-    if (node -> value == "*") return 2;
+    if (node->value == "*")
+        return 2;
 
-    if (node -> value == "^") return 3;
+    if (node->value == "^")
+        return 3;
 
     return 100;
 }

@@ -19,9 +19,7 @@ export default function Chat() {
                         variant="destructive"
                         size="icon"
                         className="absolute top-2 right-2"
-                        onClick={() =>
-                    deleteCell(key)
-                        }
+                        onClick={() => deleteCell(key)}
                     >
                         <Trash2 />
                     </Button>
@@ -30,18 +28,25 @@ export default function Chat() {
                     </CardHeader>
                     <CardContent className="flex flex-col gap-4">
                         <div className="flex flex-row gap-4">
-                            <Input onChange={(e) => updateCell(key, e.target.value)}></Input>
+                            <Input
+                                onChange={(e) =>
+                                    updateCell(key, e.target.value)
+                                }
+                            ></Input>
                             <Button>Calculer</Button>
                         </div>
-                        <div className="text-lg"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]} >{`$${renderedCells[key]}$`}</ReactMarkdown></div>
+                        <h1 className="text-lg">Expression :</h1>
+                        <div className="text-lg text-center">
+                            <ReactMarkdown
+                                remarkPlugins={[remarkMath]}
+                                rehypePlugins={[rehypeKatex]}
+                            >{`$${renderedCells[key]}$`}</ReactMarkdown>
+                        </div>
                     </CardContent>
                 </Card>
             ))}
 
-            <Button
-                size="icon"
-                onClick={addCell}
-            >
+            <Button size="icon" onClick={addCell}>
                 +
             </Button>
         </main>
