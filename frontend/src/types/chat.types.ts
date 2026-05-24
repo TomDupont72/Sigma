@@ -1,6 +1,5 @@
-export type Cell = {
-    expression: string,
-    latexExpression: string,
-    result: string,
-    latexResult: string
+export type EngineDisplayParams = {
+    expression: string
 }
+
+export type EngineSimplifyBody = EngineDisplayParams

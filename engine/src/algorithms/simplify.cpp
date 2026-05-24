@@ -3,18 +3,19 @@
 #include "algorithms/utils.hpp"
 #include "algorithms/display.hpp"
 #include "types/tokenTypes.hpp"
-#include<vector>
-#include<map>
+#include <vector>
+#include <map>
 #include <cmath>
+#include <numeric>
 
 int MAX_ITERATION = 100;
 
-Node * normalize(Node * node)
+Node *normalize(Node *node)
 {
-    Node * current = node;
+    Node *current = node;
     int current_iteration = 1;
 
-    while(true)
+    while (true)
     {
         string before = displayExpression(current, 0);
 
@@ -23,7 +24,8 @@ Node * normalize(Node * node)
 
         string after = displayExpression(current, 0);
 
-        if (before == after) break;
+        if (before == after)
+            break;
 
         current_iteration++;
     }
@@ -31,22 +33,25 @@ Node * normalize(Node * node)
     return current;
 }
 
-Node * simplify(Node * node)
+Node *simplify(Node *node)
 {
-    if (node->children.empty()) return node;
+    if (node->children.empty())
+        return node;
 
     vector<Node *> simplifiedChildren;
 
-    for (Node * child: node->children) simplifiedChildren.push_back(simplify(child));
+    for (Node *child : node->children)
+        simplifiedChildren.push_back(simplify(child));
 
     node->children = simplifiedChildren;
 
-    if (node->value == "+" || node->value == "*" || node->value == "^") node = simplifyOperation(node, node->value);
+    if (node->value == "+" || node->value == "*" || node->value == "^")
+        node = simplifyOperation(node, node->value);
 
     return node;
 }
 
-Node * simplifyOperation(Node * node, string value)
+Node *simplifyOperation(Node *node, string value)
 {
     vector<Node *> terms;
     vector<Node *> resChildren;
@@ -67,28 +72,31 @@ Node * simplifyOperation(Node * node, string value)
 
     if (node->value == "^")
     {
-        if (node->children.size() != 2) return node;
+        if (node->children.size() != 2)
+            return node;
 
         auto [base, exponent] = createPowerMapping(node);
 
         return constructPower(base, exponent);
     }
 
-    if (resChildren.size() == 1) node = resChildren[0];
-    else node->children = resChildren;
+    if (resChildren.size() == 1)
+        node = resChildren[0];
+    else
+        node->children = resChildren;
 
     return node;
 }
 
-
-
-void collectTerms(Node * node, vector<Node *>& terms, string value)
+void collectTerms(Node *node, vector<Node *> &terms, string value)
 {
     if (node->value == value)
     {
-        for (Node * child: node->children) collectTerms(child, terms, value);
+        for (Node *child : node->children)
+            collectTerms(child, terms, value);
     }
-    else terms.push_back(node);
+    else
+        terms.push_back(node);
 }
 
 tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node *> terms, string value)
@@ -98,13 +106,15 @@ tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node
     map<string, float> mapping;
     map<string, Node *> symbolicMapping;
 
-    for (Node * child: terms)
+    for (Node *child : terms)
     {
-        if (isNumber(child->value)) number = operation(number, stof(child->value), previousValue[value]);
-        else if (child->value != value) {
+        if (isNumber(child->value))
+            number = operation(number, stof(child->value), previousValue[value]);
+        else if (child->value != value)
+        {
             string key = displayExpression(child, 0);
 
-            mapping[key] ++;
+            mapping[key]++;
             symbolicMapping[key] = child;
         }
         else
@@ -112,10 +122,12 @@ tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node
             float coeff = stof((child->children[0])->value);
             vector<Node *> nonNumericFactors((child->children).begin() + 1, (child->children).end());
 
-            Node * symbolicPart;
+            Node *symbolicPart;
 
-            if (nonNumericFactors.size() == 1) symbolicPart = nonNumericFactors[0];
-            else symbolicPart = new Node(value, nonNumericFactors);
+            if (nonNumericFactors.size() == 1)
+                symbolicPart = nonNumericFactors[0];
+            else
+                symbolicPart = new Node(value, nonNumericFactors);
 
             string key = displayExpression(symbolicPart, 0);
 
@@ -130,24 +142,32 @@ tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node
 tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vector<Node *> terms, string value)
 {
     float number = 1;
+    int denominator = 1;
 
     map<string, float> mapping;
     map<string, Node *> symbolicMapping;
 
-    for (Node* child : terms)
+    for (Node *child : terms)
     {
         if (isNumber(child->value))
         {
             number *= stof(child->value);
         }
-        else if (child->value == "^" )
+        else if (child->value == "^")
         {
-            Node* base = child->children[0];
-            Node* exponent = child->children[1];
+            Node *base = child->children[0];
+            Node *exponent = child->children[1];
 
-            string key = displayExpression(base, 0);
-            mapping[key] += stof(exponent->value);
-            symbolicMapping[key] = base;
+            if (base->children.empty() && exponent->children.empty() && isNumber(base->value) && isNumber(exponent->value) && stof(exponent->value) == -1 && stof(base->value) == stoi(base->value))
+                denominator *= stoi(base->value);
+            else if (base->children.empty() && exponent->children.empty() && isNumber(base->value) && isNumber(exponent->value))
+                number *= pow(stof(base->value), stof(exponent->value));
+            else
+            {
+                string key = displayExpression(base, 0);
+                mapping[key] += stof(exponent->value);
+                symbolicMapping[key] = base;
+            }
         }
         else
         {
@@ -157,13 +177,29 @@ tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vect
         }
     }
 
+    if (denominator != 1 && number == (int)number)
+    {
+        int numerator = (int)number;
+        int divisor = gcd(abs(numerator), abs(denominator));
+
+        number = numerator / divisor;
+        denominator /= divisor;
+
+        if (denominator != 1)
+        {
+            string key = numberToString(denominator);
+            mapping[key] -= 1;
+            symbolicMapping[key] = new Node(key, {});
+        }
+    }
+
     return {mapping, symbolicMapping, number};
 }
 
-tuple<Node*, float> createPowerMapping(Node* node)
+tuple<Node *, float> createPowerMapping(Node *node)
 {
-    Node* base = node->children[0];
-    Node* exponent = node->children[1];
+    Node *base = node->children[0];
+    Node *exponent = node->children[1];
 
     float power = 1;
 
@@ -191,19 +227,23 @@ vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *>
 
     resChildren.push_back(new Node(numberToString(number), {}));
 
-    for (const auto& pair: mapping)
+    for (const auto &pair : mapping)
     {
         if (symbolicMapping.contains(pair.first))
         {
-            Node * symbolicPart = symbolicMapping[pair.first];
+            Node *symbolicPart = symbolicMapping[pair.first];
 
-            if (pair.second == stof(neutralElement[value])) resChildren.push_back(symbolicPart);
-            else resChildren.push_back(new Node(value, {new Node(numberToString(pair.second), {}), symbolicPart}));
+            if (pair.second == stof(neutralElement[value]))
+                resChildren.push_back(symbolicPart);
+            else
+                resChildren.push_back(new Node(value, {new Node(numberToString(pair.second), {}), symbolicPart}));
         }
         else
         {
-            if (pair.second == 1) resChildren.push_back(new Node(pair.first, {}));
-            else resChildren.push_back(new Node(value, {new Node(numberToString(pair.second), {}), new Node(pair.first, {})}));
+            if (pair.second == 1)
+                resChildren.push_back(new Node(pair.first, {}));
+            else
+                resChildren.push_back(new Node(value, {new Node(numberToString(pair.second), {}), new Node(pair.first, {})}));
         }
     }
 
@@ -216,26 +256,30 @@ vector<Node *> constructPowerChildren(map<string, float> mapping, map<string, No
 
     resChildren.push_back(new Node(numberToString(number), {}));
 
-    for (const auto& pair: mapping)
+    for (const auto &pair : mapping)
     {
         if (symbolicMapping.contains(pair.first))
         {
-            Node * symbolicPart = symbolicMapping[pair.first];
+            Node *symbolicPart = symbolicMapping[pair.first];
 
-            if (pair.second == 1) resChildren.push_back(symbolicPart);
-            else resChildren.push_back(new Node("^", {symbolicPart, new Node(numberToString(pair.second), {})}));
+            if (pair.second == 1)
+                resChildren.push_back(symbolicPart);
+            else
+                resChildren.push_back(new Node("^", {symbolicPart, new Node(numberToString(pair.second), {})}));
         }
         else
         {
-            if (pair.second == 1) resChildren.push_back(new Node(pair.first, {}));
-            else resChildren.push_back(new Node("^", {new Node(pair.first, {}), new Node(numberToString(pair.second), {})}));
+            if (pair.second == 1)
+                resChildren.push_back(new Node(pair.first, {}));
+            else
+                resChildren.push_back(new Node("^", {new Node(pair.first, {}), new Node(numberToString(pair.second), {})}));
         }
     }
 
     return resChildren;
 }
 
-Node* constructPower(Node* base, float exponent)
+Node *constructPower(Node *base, float exponent)
 {
     if (exponent == 0)
         return new Node("1", {});
@@ -247,45 +291,53 @@ Node* constructPower(Node* base, float exponent)
     {
         vector<Node *> resChildren;
 
-        for (Node * child: base->children)
+        for (Node *child : base->children)
         {
-            if (child->children.empty() && child->value == neutralElement[base->value]) continue;
+            if (child->children.empty() && child->value == neutralElement[base->value])
+                continue;
 
             if (child->value == "^" && child->children.size() == 2 && child->children[1]->children.empty() && isNumber(child->children[1]->value))
             {
                 float childExponent = stof(child->children[1]->value);
                 resChildren.push_back(constructPower(child->children[0], childExponent * exponent));
             }
-            else resChildren.push_back(constructPower(child, exponent));
+            else
+                resChildren.push_back(constructPower(child, exponent));
         }
 
-        if (resChildren.empty()) return new Node("1", {});
+        if (resChildren.empty())
+            return new Node("1", {});
 
-        if (resChildren.size() == 1) return resChildren[0];
+        if (resChildren.size() == 1)
+            return resChildren[0];
 
         return new Node("*", resChildren);
     }
 
-    return new Node("^",{ base, new Node(numberToString(exponent), {})});
+    return new Node("^", {base, new Node(numberToString(exponent), {})});
 }
 
-Node * applyRewriteRules(Node * node)
+Node *applyRewriteRules(Node *node)
 {
-    for (Node*& child : node->children) child = applyRewriteRules(child);
+    for (Node *&child : node->children)
+        child = applyRewriteRules(child);
 
     if (node->value == "*")
     {
-        if((node->children[0])->value == "0") return new Node("0", {});
+        if ((node->children[0])->value == "0")
+            return new Node("0", {});
     }
 
     if (node->value == "^")
     {
-        if((node->children[1])->value == "0") return new Node("1", {});
+        if ((node->children[1])->value == "0")
+            return new Node("1", {});
     }
 
     if (node->value == "ln")
     {
-        if((node->children[0])->value == "1") return new Node("0", {});
+        if ((node->children[0])->value == "1")
+            return new Node("0", {});
     }
 
     return node;

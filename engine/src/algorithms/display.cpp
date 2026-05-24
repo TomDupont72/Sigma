@@ -42,6 +42,7 @@ string displayExpression(Node *node, int parentPriority)
 
     if (node->value == "*")
     {
+        vector<Node *> numeratorNodes;
         vector<string> numeratorParts;
         vector<string> denominatorParts;
 
@@ -63,9 +64,12 @@ string displayExpression(Node *node, int parentPriority)
             }
             else
             {
-                numeratorParts.push_back(displayExpression(child, priority(node)));
+                numeratorNodes.push_back(child);
             }
         }
+
+        for (Node *child : numeratorNodes)
+            numeratorParts.push_back(displayExpression(child, denominatorParts.empty() ? priority(node) : 0));
 
         if (numeratorParts.empty())
             numeratorParts.push_back("1");

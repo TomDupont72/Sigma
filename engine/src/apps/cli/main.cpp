@@ -10,14 +10,14 @@
 
 using namespace std;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     string command = argv[1];
     string expression = argv[2];
 
     vector<Token> res = lexer(expression);
     Parser parser(res);
-    Node * tree = parser.parseExpression();
+    Node *tree = parser.parseExpression();
 
     if (command == "display")
     {
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 
     if (command == "simplify")
     {
-        tree = simplify(tree);
+        tree = normalize(tree);
         cout << displayExpression(tree, 0);
     }
 

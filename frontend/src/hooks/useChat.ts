@@ -1,23 +1,34 @@
 import type { Cell } from "@/types/chat.types";
 import { useState } from "react";
 import { useMutation, useQueries, useQuery } from "@tanstack/react-query"
-import { apiEngineDisplay } from "@/api/engine.api";
+import { apiEngineDisplay, apiEngineSimplify } from "@/api/engine.api";
 
 export function useChat() {
     const [cellNumber, setCellNumber] = useState<number>(0);
     const [cells, setCells] = useState<Record<string, string>>({});
+    const [resultCells, setResultCells] = useState<Record<string, string>>({});
 
-    const displayQueries = useQueries({
+    const engineDisplayQueries = useQueries({
         queries: Object.entries(cells).map(([key, expression]) => ({
             queryKey: ["display", key, expression],
             queryFn: async () => {
                 const res = await apiEngineDisplay({ expression: expression });
-                console.log(res.data)
                 return res.data;
             },
             enabled: !!expression,
         })),
     });
+
+    const engineSimplifyMutation = useMutation({
+        mutationFn: async ({ key, expression }: {key: string, expression: string}) => {
+            const res = await apiEngineSimplify({ expression: expression })
+            console.log(res)
+            return { key, data: res.data }
+        },
+        onSuccess: ({ key, data }) => {
+            setResultCells((prev) => ({ ...prev, [key]: data.expressionLatex}))
+        }
+    })
 
     const addCell = () => {
         const newCellNumber = cellNumber + 1;
@@ -47,12 +58,16 @@ export function useChat() {
         })
     }
 
+    const engineSimplify = async (key: string, expression: string) => {
+        await engineSimplifyMutation.mutateAsync({ key, expression })
+    }
+
     const renderedCells = Object.fromEntries(
         Object.keys(cells).map((key, i) => [
             key,
-            displayQueries[i].data?.expressionPlain ?? null
+            engineDisplayQueries[i].data?.expressionLatex ?? null
         ])
     );
 
-    return { cells, setCells, renderedCells, addCell, updateCell, deleteCell }
+    return { cells, setCells, renderedCells, resultCells, addCell, updateCell, deleteCell, engineSimplify }
 }
