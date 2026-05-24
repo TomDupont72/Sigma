@@ -7,10 +7,10 @@ import { promisify } from "util";
 const execFileAsync = promisify(execFile);
 
 export async function engineRoutes(fastify: FastifyInstance) {
-    fastify.post(
+    fastify.get(
         "/display",
         async (request: FastifyRequest, reply: FastifyReply) => {
-            const { expression } = request.body as EngineDisplayBody;
+            const { expression } = request.query as EngineDisplayBody;
 
             const data = await apiEngineDisplay(expression);
 

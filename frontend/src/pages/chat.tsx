@@ -3,9 +3,13 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useChat } from "@/hooks/useChat";
 import { Trash2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 export default function Chat() {
-    const { cells, setCells, addCell, deleteCell } = useChat();
+    const { cells, renderedCells, addCell, updateCell, deleteCell } = useChat();
 
     return (
         <main className="min-h-dvh flex flex-col items-center gap-6 p-6">
@@ -24,11 +28,12 @@ export default function Chat() {
                     <CardHeader>
                         <h1 className="font-bold text-xl">{key}</h1>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex flex-col gap-4">
                         <div className="flex flex-row gap-4">
-                            <Input></Input>
+                            <Input onChange={(e) => updateCell(key, e.target.value)}></Input>
                             <Button>Calculer</Button>
                         </div>
+                        <div className="text-lg"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]} >{`$${renderedCells[key]}$`}</ReactMarkdown></div>
                     </CardContent>
                 </Card>
             ))}

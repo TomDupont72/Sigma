@@ -11,7 +11,7 @@ export async function apiEngineDisplay(expression: string) {
         ["display", expression]
     );
 
-    return { stdout }
+    return { expressionPlain: stdout }
 }
 
 export async function apiEngineSimplify(expression: string) {
