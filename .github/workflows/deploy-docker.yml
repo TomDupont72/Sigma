@@ -64,9 +64,11 @@ jobs:
       - name: Deploy on VPS
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
-            cd /var/www/sigma &&
-            echo APP_VERSION=${{ env.IMAGE_TAG }} > .env &&
-            docker-compose -f compose.prod.yaml pull &&
-            docker-compose -f compose.prod.yaml up -d &&
+            set -e
+            cd /var/www/sigma
+            echo APP_VERSION=${{ env.IMAGE_TAG }} > .env
+            docker-compose -f compose.prod.yaml pull
+            docker-compose -f compose.prod.yaml down
+            docker-compose -f compose.prod.yaml up -d
             docker image prune -f
           "
