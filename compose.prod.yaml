@@ -2,6 +2,7 @@ services:
   backend:
     build:
       context: .
+      dockerfile: backend/Dockerfile
     image: ghcr.io/tomdupont72/sigma-backend:latest
     env_file:
       - /etc/sigma-api.env
