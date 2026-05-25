@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: .
+    image: ghcr.io/tomdupont72/sigma-backend:latest
+    env_file:
+      - /etc/sigma-api.env
+    ports:
+      - "8003:8000"
+    networks:
+      - shared-network
+    restart: unless-stopped
+
+  frontend:
+    image: ghcr.io/tomdupont72/sigma-frontend:latest
+    ports:
+      - "5174:80"
+    restart: unless-stopped
+
+networks:
+  shared-network:
+    external: true

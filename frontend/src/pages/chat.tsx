@@ -28,11 +28,11 @@ export default function Chat() {
                 {Object.entries(cells).map(([key, cell]) => (
                     <MotionCard
                         key={key}
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.1 }}
-                        exit={{ scale: 0 }}
-                        className="relative w-5/10"
+                        exit={{ scale: 0, opacity: 0 }}
+                        className="relative w-full sm:w-8/10 md:w-7/10 lg:w-6/10 xl:w-5/10"
                     >
                         <Button
                             variant="destructive"

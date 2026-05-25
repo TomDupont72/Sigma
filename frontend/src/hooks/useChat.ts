@@ -1,6 +1,5 @@
-import type { Cell } from "@/types/chat.types";
 import { useState } from "react";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query"
+import { useMutation, useQueries } from "@tanstack/react-query"
 import { apiEngineDisplay, apiEngineSimplify } from "@/api/engine.api";
 
 export function useChat() {
