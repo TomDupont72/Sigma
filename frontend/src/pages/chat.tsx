@@ -8,6 +8,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import { AnimatePresence, motion } from "framer-motion";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const MotionCard = motion(Card);
 
@@ -19,7 +20,7 @@ export default function Chat() {
         addCell,
         updateCell,
         deleteCell,
-        engineSimplify,
+        engineAction,
     } = useChat();
 
     return (
@@ -49,15 +50,41 @@ export default function Chat() {
                             <div className="flex flex-row gap-4">
                                 <Input
                                     onChange={(e) =>
-                                        updateCell(key, e.target.value)
+                                        updateCell(
+                                            key,
+                                            e.target.value,
+                                            cell.mode,
+                                        )
                                     }
                                 ></Input>
                                 <Button
-                                    onClick={() => engineSimplify(key, cell)}
+                                    onClick={() =>
+                                        engineAction(
+                                            key,
+                                            cell.expression,
+                                            cell.mode,
+                                        )
+                                    }
                                 >
                                     Calculer
                                 </Button>
                             </div>
+                            <ToggleGroup
+                                variant="outline"
+                                type="single"
+                                value={cell.mode}
+                                onValueChange={(value) => {
+                                    if (value)
+                                        updateCell(key, cell.expression, value);
+                                }}
+                            >
+                                <ToggleGroupItem value="simplify">
+                                    Simplifier
+                                </ToggleGroupItem>
+                                <ToggleGroupItem value="derive">
+                                    Dériver (Soon)
+                                </ToggleGroupItem>
+                            </ToggleGroup>
                             <h1 className="text-lg">Expression :</h1>
                             <div className="text-lg text-center">
                                 <ReactMarkdown

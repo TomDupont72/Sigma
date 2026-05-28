@@ -16,14 +16,21 @@ SRC = \
 OBJ = $(SRC:.cpp=.o)
 DEP = $(OBJ:.o=.d)
 
-app: $(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o app
+all: app app.exe
+
+app.exe: $(OBJ)
+	$(CXX) $(CXXFLAGS) $(OBJ) -o app.exe
+
+app: app.exe
+	powershell -NoProfile -Command "Copy-Item -Force -LiteralPath app.exe -Destination app"
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
 
-.PHONY: clean
+.PHONY: all clean rebuild
+rebuild: clean all
+
 clean:
-	-del /Q $(subst /,\,$(OBJ)) $(subst /,\,$(DEP)) app.exe 2>NUL
+	powershell -NoProfile -Command "$$paths = @($(foreach f,$(OBJ) $(DEP) app app.exe,'$(subst /,\,$f)';)); Remove-Item -Force -ErrorAction SilentlyContinue -LiteralPath $$paths; exit 0"
 
 -include $(DEP)
