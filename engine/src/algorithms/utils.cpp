@@ -1,11 +1,11 @@
 #include "algorithms/utils.hpp"
 #include "domain/tree.hpp"
 #include <sstream>
-#include<vector>
+#include <vector>
 
 using namespace std;
 
-string join(const vector<string>& values, const string& separator)
+string join(const vector<string> &values, const string &separator)
 {
     stringstream ss;
 
@@ -13,13 +13,14 @@ string join(const vector<string>& values, const string& separator)
     {
         ss << values[i];
 
-        if (i < values.size() - 1) ss << separator;
+        if (i < values.size() - 1)
+            ss << separator;
     }
 
     return ss.str();
 }
 
-string joinSum(const vector<string>& parts)
+string joinSum(const vector<string> &parts)
 {
     string res = "";
 
@@ -42,12 +43,13 @@ string joinSum(const vector<string>& parts)
     return res;
 }
 
-bool isNumber(const string& s)
+bool isNumber(const string &s)
 {
     bool dotSeen = false;
     bool firstChar = true;
 
-    if (s.empty()) return false;
+    if (s.empty())
+        return false;
 
     for (char c : s)
     {
@@ -59,7 +61,8 @@ bool isNumber(const string& s)
 
             dotSeen = true;
         }
-        else if (!isdigit(c)) return false;
+        else if (!isdigit(c))
+            return false;
     }
 
     return true;
@@ -72,7 +75,7 @@ string numberToString(float value)
     return oss.str();
 }
 
-void printTree(Node* node, string prefix, bool isLast)
+void printTree(Node *node, string prefix, bool isLast)
 {
     cout << prefix;
 
@@ -85,8 +88,7 @@ void printTree(Node* node, string prefix, bool isLast)
         printTree(
             node->children[i],
             prefix + (isLast ? "    " : "|   "),
-            i == node->children.size() - 1
-        );
+            i == node->children.size() - 1);
     }
 
     cout << "\n";
@@ -94,9 +96,26 @@ void printTree(Node* node, string prefix, bool isLast)
 
 float operation(float a, float b, string value)
 {
-    if (value == "+") return a + b;
+    if (value == "+")
+        return a + b;
 
-    if (value == "*") return a * b;
+    if (value == "*")
+        return a * b;
 
     return 0;
+}
+
+vector<Node *> copyWithoutIndex(const vector<Node *> &children, int indexToRemove)
+{
+    vector<Node *> result;
+
+    for (int i = 0; i < children.size(); i++)
+    {
+        if (i != indexToRemove)
+        {
+            result.push_back(children[i]);
+        }
+    }
+
+    return result;
 }

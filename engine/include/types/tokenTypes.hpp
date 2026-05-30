@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <set>
 #include <string>
 
 using namespace std;
@@ -39,18 +40,19 @@ inline map<char, TokenType> parenMapping =
 inline map<string, string> nextValue =
     {
         {"+", "*"},
-        {"*", "^"}
-    };
+        {"*", "^"}};
 
 inline map<string, string> previousValue =
     {
         {"*", "+"},
-        {"^", "*"}
-    };
+        {"^", "*"}};
 
 inline map<string, string> neutralElement =
-{
-    {"+", "0"},
-    {"*", "1"},
-    {"^", "1"}
-};
+    {
+        {"+", "0"},
+        {"*", "1"},
+        {"^", "1"}};
+
+inline set<string> operations = {"+", "*", "^"};
+
+inline set<string> identifiers = {"ln"};

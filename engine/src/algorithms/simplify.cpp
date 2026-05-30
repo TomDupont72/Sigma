@@ -8,6 +8,8 @@
 #include <cmath>
 #include <numeric>
 
+using namespace std;
+
 int MAX_ITERATION = 100;
 
 Node *normalize(Node *node)
@@ -119,8 +121,16 @@ tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node
         }
         else
         {
-            float coeff = stof((child->children[0])->value);
-            vector<Node *> nonNumericFactors((child->children).begin() + 1, (child->children).end());
+            float coeff = 1;
+            size_t firstNonNumericIndex = 0;
+
+            if (!child->children.empty() && child->children[0]->children.empty() && isNumber(child->children[0]->value))
+            {
+                coeff = stof(child->children[0]->value);
+                firstNonNumericIndex = 1;
+            }
+
+            vector<Node *> nonNumericFactors((child->children).begin() + firstNonNumericIndex, (child->children).end());
 
             Node *symbolicPart;
 
@@ -162,6 +172,12 @@ tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vect
                 denominator *= stoi(base->value);
             else if (base->children.empty() && exponent->children.empty() && isNumber(base->value) && isNumber(exponent->value))
                 number *= pow(stof(base->value), stof(exponent->value));
+            else if (!exponent->children.empty() || !isNumber(exponent->value))
+            {
+                string key = displayExpression(child, 0);
+                mapping[key] += 1;
+                symbolicMapping[key] = child;
+            }
             else
             {
                 string key = displayExpression(base, 0);
@@ -196,7 +212,7 @@ tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vect
     return {mapping, symbolicMapping, number};
 }
 
-tuple<Node *, float> createPowerMapping(Node *node)
+tuple<Node *, Node *> createPowerMapping(Node *node)
 {
     Node *base = node->children[0];
     Node *exponent = node->children[1];
@@ -209,7 +225,7 @@ tuple<Node *, float> createPowerMapping(Node *node)
     }
     else
     {
-        return {base, 1};
+        return {base, exponent};
     }
 
     while (base->value == "^" && base->children.size() == 2 && base->children[1]->children.empty() && isNumber(base->children[1]->value))
@@ -218,7 +234,7 @@ tuple<Node *, float> createPowerMapping(Node *node)
         base = base->children[0];
     }
 
-    return {base, power};
+    return {base, new Node(numberToString(power), {})};
 }
 
 vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *> symbolicMapping, float number, string value)
@@ -279,12 +295,12 @@ vector<Node *> constructPowerChildren(map<string, float> mapping, map<string, No
     return resChildren;
 }
 
-Node *constructPower(Node *base, float exponent)
+Node *constructPower(Node *base, Node *exponent)
 {
-    if (exponent == 0)
+    if (exponent->value == "0")
         return new Node("1", {});
 
-    if (exponent == 1)
+    if (exponent->value == "1")
         return base;
 
     if (base->value == "*")
@@ -299,7 +315,7 @@ Node *constructPower(Node *base, float exponent)
             if (child->value == "^" && child->children.size() == 2 && child->children[1]->children.empty() && isNumber(child->children[1]->value))
             {
                 float childExponent = stof(child->children[1]->value);
-                resChildren.push_back(constructPower(child->children[0], childExponent * exponent));
+                resChildren.push_back(constructPower(child->children[0], new Node("*", {new Node(numberToString(childExponent), {}), exponent})));
             }
             else
                 resChildren.push_back(constructPower(child, exponent));
@@ -314,13 +330,19 @@ Node *constructPower(Node *base, float exponent)
         return new Node("*", resChildren);
     }
 
-    return new Node("^", {base, new Node(numberToString(exponent), {})});
+    return new Node("^", {base, exponent});
 }
 
 Node *applyRewriteRules(Node *node)
 {
     for (Node *&child : node->children)
         child = applyRewriteRules(child);
+
+    if (node->value == "+")
+    {
+        if ((node->children[0])->value == "0" && node->children.size() == 2)
+            return node->children[1];
+    }
 
     if (node->value == "*")
     {
