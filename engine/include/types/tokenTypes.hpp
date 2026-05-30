@@ -55,4 +55,4 @@ inline map<string, string> neutralElement =
 
 inline set<string> operations = {"+", "*", "^"};
 
-inline set<string> identifiers = {"ln"};
+inline set<string> identifiers = {"ln", "exp"};

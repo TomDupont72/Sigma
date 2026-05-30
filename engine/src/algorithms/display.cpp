@@ -13,7 +13,7 @@ string displayExpression(Node *node, int parentPriority)
     if (node->children.empty())
         return node->value;
 
-    if (node->value == "+")
+    else if (node->value == "+")
     {
         vector<string> parts;
 
@@ -40,7 +40,7 @@ string displayExpression(Node *node, int parentPriority)
         res = joinSum(parts);
     }
 
-    if (node->value == "*")
+    else if (node->value == "*")
     {
         vector<Node *> numeratorNodes;
         vector<string> numeratorParts;
@@ -80,7 +80,7 @@ string displayExpression(Node *node, int parentPriority)
             res = "\\displaystyle\\frac{" + join(numeratorParts, "") + "}{" + join(denominatorParts, "") + "}";
     }
 
-    if (node->value == "^")
+    else if (node->value == "^")
     {
         if (node->children[1]->children.empty() && isNumber(node->children[1]->value) && stof(node->children[1]->value) < 0)
         {
@@ -101,7 +101,17 @@ string displayExpression(Node *node, int parentPriority)
         }
     }
 
-    if (node->children.size() == 1)
+    else if (node->value == "ln")
+    {
+        res = "\\textup{ln}\\left(" + displayExpression(node->children[0], 0) + "\\right)";
+    }
+
+    else if (node->value == "exp")
+    {
+        res = "\\textup{e}^{" + displayExpression(node->children[0], 0) + "}";
+    }
+
+    else if (node->children.size() == 1)
     {
         res = node->value + "\\left(" + displayExpression(node->children[0], 0) + "\\right)";
     }

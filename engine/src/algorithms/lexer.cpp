@@ -53,7 +53,8 @@ void parseDigit(string &expression, vector<Token> &res, int &index, int expressi
 
     while ((++index < expressionLength && isdigit(expression[index])) || (expression[index] == '.' && !dotSeen))
     {
-        if (expression[index] == '.') dotSeen = true;
+        if (expression[index] == '.')
+            dotSeen = true;
         currentToken.value += expression[index];
     }
 
@@ -69,6 +70,9 @@ void parseAlpha(string &expression, vector<Token> &res, int &index, int expressi
     {
         currentToken.value += expression[index];
     }
+
+    if (!identifiers.contains(currentToken.value) && currentToken.value.size() > 1)
+        currentToken.type = TokenType::Invalid;
 
     res.push_back(currentToken);
     index--;

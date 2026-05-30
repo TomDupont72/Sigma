@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     if (command == "simplify")
     {
         tree = normalize(tree);
+        printTree(tree);
         cout << displayExpression(tree, 0);
     }
 
