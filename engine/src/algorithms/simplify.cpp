@@ -372,5 +372,21 @@ Node *applyRewriteRules(Node *node)
             return (node->children[0])->children[0];
     }
 
+    if (node->value == "sum")
+    {
+        if (isNumber(node->children[3]->value))
+        {
+            return new Node("*", {node->children[3], new Node("+", {node->children[2], new Node("*", {new Node("-1", {}), node->children[1]}), new Node("1", {})})});
+        }
+    }
+
+    if (node->value == "prod")
+    {
+        if (isNumber(node->children[3]->value))
+        {
+            return new Node("^", {node->children[3], new Node("+", {node->children[2], new Node("*", {new Node("-1", {}), node->children[1]}), new Node("1", {})})});
+        }
+    }
+
     return node;
 }
