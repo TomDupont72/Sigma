@@ -360,6 +360,16 @@ Node *applyRewriteRules(Node *node)
     {
         if ((node->children[0])->value == "1")
             return new Node("0", {});
+        if ((node->children[0])->value == "exp")
+            return (node->children[0])->children[0];
+    }
+
+    if (node->value == "exp")
+    {
+        if ((node->children[0])->value == "0")
+            return new Node("1", {});
+        if ((node->children[0])->value == "ln")
+            return (node->children[0])->children[0];
     }
 
     return node;
