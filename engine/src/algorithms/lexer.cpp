@@ -33,9 +33,9 @@ vector<Token> lexer(string expression)
             res.push_back(currentToken);
         }
 
-        if (parenMapping.find(currentChar) != parenMapping.end())
+        if (delimiterMapping.find(currentChar) != delimiterMapping.end())
         {
-            Token currentToken(parenMapping[currentChar], string(1, currentChar));
+            Token currentToken(delimiterMapping[currentChar], string(1, currentChar));
             res.push_back(currentToken);
         }
     }

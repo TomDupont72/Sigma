@@ -19,6 +19,7 @@ enum class TokenType
 
     LeftParen,
     RightParen,
+    Comma,
 
     End,
     Invalid
@@ -32,10 +33,11 @@ inline map<char, TokenType> operatorMapping =
         {'/', TokenType::Divide},
         {'^', TokenType::Power}};
 
-inline map<char, TokenType> parenMapping =
+inline map<char, TokenType> delimiterMapping =
     {
         {'(', TokenType::LeftParen},
-        {')', TokenType::RightParen}};
+        {')', TokenType::RightParen},
+        {',', TokenType::Comma}};
 
 inline map<string, string> nextValue =
     {
@@ -55,4 +57,4 @@ inline map<string, string> neutralElement =
 
 inline set<string> operations = {"+", "*", "^"};
 
-inline set<string> identifiers = {"ln", "exp"};
+inline set<string> identifiers = {"ln", "exp", "sum", "prod"};

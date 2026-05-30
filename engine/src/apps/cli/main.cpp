@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
 {
     string command = argv[1];
     string expression = argv[2];
-    string variable = argv[3];
 
     vector<Token> res = lexer(expression);
     Parser parser(res);
@@ -29,16 +28,14 @@ int main(int argc, char *argv[])
     if (command == "simplify")
     {
         tree = normalize(tree);
-        printTree(tree);
         cout << displayExpression(tree, 0);
     }
 
     if (command == "derive")
     {
+        string variable = argv[3];
         tree = derive(tree, variable);
-        printTree(tree);
         tree = normalize(tree);
-        printTree(tree);
         cout << displayExpression(tree, 0);
     }
 

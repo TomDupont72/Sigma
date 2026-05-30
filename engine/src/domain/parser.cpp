@@ -7,13 +7,13 @@
 
 using namespace std;
 
-Parser::Parser(const vector<Token>& tokens)
+Parser::Parser(const vector<Token> &tokens)
 {
     this->tokens = tokens;
     this->pos = 0;
 }
 
-Node * Parser::parseExpression()
+Node *Parser::parseExpression()
 {
     vector<Node *> terms;
 
@@ -24,19 +24,21 @@ Node * Parser::parseExpression()
         TokenType operation = currentToken().type;
         advance();
 
-        Node * right = parseTerm();
+        Node *right = parseTerm();
 
-        if (operation == TokenType::Plus) terms.push_back(right);
-        else terms.push_back(new Node("*", { new Node("-1", {}), right }));
-
+        if (operation == TokenType::Plus)
+            terms.push_back(right);
+        else
+            terms.push_back(new Node("*", {new Node("-1", {}), right}));
     }
 
-    if (terms.size() == 1) return terms[0];
+    if (terms.size() == 1)
+        return terms[0];
 
     return new Node("+", terms);
 }
 
-Node * Parser::parseTerm()
+Node *Parser::parseTerm()
 {
     vector<Node *> terms;
 
@@ -47,35 +49,37 @@ Node * Parser::parseTerm()
         TokenType operation = currentToken().type;
         advance();
 
-        Node * right = parsePower();
+        Node *right = parsePower();
 
-        if (operation == TokenType::Multiply) terms.push_back(right);
-        else terms.push_back(new Node("^", { right, new Node("-1", {}) }));
-
+        if (operation == TokenType::Multiply)
+            terms.push_back(right);
+        else
+            terms.push_back(new Node("^", {right, new Node("-1", {})}));
     }
 
-    if (terms.size() == 1) return terms[0];
+    if (terms.size() == 1)
+        return terms[0];
 
     return new Node("*", terms);
 }
 
-Node * Parser::parsePower()
+Node *Parser::parsePower()
 {
-    Node* left = parseFactor();
+    Node *left = parseFactor();
 
     while (currentToken().type == TokenType::Power)
     {
         advance();
 
-        Node* right = parseFactor();
+        Node *right = parseFactor();
 
-        return new Node("^", { left, right });
+        return new Node("^", {left, right});
     }
 
     return left;
 }
 
-Node * Parser::parseFactor()
+Node *Parser::parseFactor()
 {
     if (currentToken().type == TokenType::Number)
     {
@@ -94,13 +98,21 @@ Node * Parser::parseFactor()
         {
             advance();
 
-            Node * argument = parseExpression();
+            vector<Node *> arguments = {};
+            arguments.push_back(parseExpression());
 
-            if (currentToken().type != TokenType::RightParen) throw runtime_error("Parenthèse fermante manquante.");
+            while (currentToken().type == TokenType::Comma)
+            {
+                advance();
+                arguments.push_back(parseExpression());
+            }
+
+            if (currentToken().type != TokenType::RightParen)
+                throw runtime_error("Parenthèse fermante manquante.");
 
             advance();
 
-            return new Node(name, { argument });
+            return new Node(name, arguments);
         }
 
         return new Node(name, {});
@@ -110,9 +122,10 @@ Node * Parser::parseFactor()
     {
         advance();
 
-        Node * expression = parseExpression();
+        Node *expression = parseExpression();
 
-        if (currentToken().type != TokenType::RightParen) throw runtime_error("Parenthèse fermante manquante.");
+        if (currentToken().type != TokenType::RightParen)
+            throw runtime_error("Parenthèse fermante manquante.");
 
         advance();
 
@@ -124,12 +137,14 @@ Node * Parser::parseFactor()
 
 Token Parser::currentToken()
 {
-    if (pos >= tokens.size()) return Token(TokenType::End, "");
+    if (pos >= tokens.size())
+        return Token(TokenType::End, "");
 
     return tokens[pos];
 }
 
 void Parser::advance()
 {
-    if (pos < tokens.size()) pos++;
+    if (pos < tokens.size())
+        pos++;
 }

@@ -111,6 +111,16 @@ string displayExpression(Node *node, int parentPriority)
         res = "\\textup{e}^{" + displayExpression(node->children[0], 0) + "}";
     }
 
+    else if (node->value == "sum")
+    {
+        res = "\\displaystyle\\sum_{" + node->children[0]->value + "=" + displayExpression(node->children[1], 0) + "}^{" + displayExpression(node->children[2], 0) + "}" + displayExpression(node->children[3], 0);
+    }
+
+    else if (node->value == "prod")
+    {
+        res = "\\displaystyle\\prod_{" + node->children[0]->value + "=" + displayExpression(node->children[1], 0) + "}^{" + displayExpression(node->children[2], 0) + "}" + displayExpression(node->children[3], 0);
+    }
+
     else if (node->children.size() == 1)
     {
         res = node->value + "\\left(" + displayExpression(node->children[0], 0) + "\\right)";
@@ -127,7 +137,7 @@ int priority(Node *node)
     if (node->value == "+")
         return 1;
 
-    if (node->value == "*")
+    if (node->value == "*" || node->value == "sum" || node->value == "prod")
         return 2;
 
     if (node->value == "^")
