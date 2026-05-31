@@ -372,6 +372,24 @@ Node *applyRewriteRules(Node *node)
             return (node->children[0])->children[0];
     }
 
+    if (node->value == "sin")
+    {
+        if (node->children[0]->value == "0")
+            return new Node("0", {});
+        if (node->children[0]->value == "pi")
+            return new Node("0", {});
+        // if (node->children[0]->value == "*" && node->children[0]->children[0]->value == "-1")
+        //     return new Node("*", {new Node("-1", {}), node->children[0]->children[1]});
+    }
+
+    if (node->value == "cos")
+    {
+        if (node->children[0]->value == "0")
+            return new Node("1", {});
+        if (node->children[0]->value == "pi")
+            return new Node("-1", {});
+    }
+
     if (node->value == "sum")
     {
         if (isNumber(node->children[3]->value))
