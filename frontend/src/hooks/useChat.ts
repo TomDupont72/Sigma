@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useMutation, useQueries } from "@tanstack/react-query"
-import { apiEngineDisplay, apiEngineSimplify } from "@/api/engine.api";
+import { apiEngineDerive, apiEngineDisplay, apiEngineSimplify } from "@/api/engine.api";
 import type { Cell } from "@/types/chat.types";
 
 export function useChat() {
     const [cellNumber, setCellNumber] = useState<number>(1);
-    const [cells, setCells] = useState<Record<string, Cell>>({"Calcul - 1": {expression: "", mode: "simplify"}});
+    const [cells, setCells] = useState<Record<string, Cell>>({"Calcul - 1": {expression: "", derivationVariable: "", mode: "simplify"}});
     const [resultCells, setResultCells] = useState<Record<string, string>>({"Calcul - 1": ""});
 
     const engineDisplayQueries = useQueries({
@@ -30,21 +30,32 @@ export function useChat() {
         }
     })
 
+    const engineDeriveMutation = useMutation({
+        mutationFn: async ({ key, expression, derivationVariable }: {key: string, expression: string, derivationVariable: string}) => {
+            const res = await apiEngineDerive({ expression: expression, derivationVariable: derivationVariable })
+            console.log(res)
+            return { key, data: res.data }
+        },
+        onSuccess: ({ key, data }) => {
+            setResultCells((prev) => ({ ...prev, [key]: data.expressionLatex}))
+        }
+    })
+
     const addCell = () => {
         const newCellNumber = cellNumber + 1;
         setCellNumber(newCellNumber)
         setCells((prev) => (
             {
                 ...prev,
-                [`Calcul - ${newCellNumber}`]: {expression: "", mode: "simplify"}
+                [`Calcul - ${newCellNumber}`]: {expression: "", derivationVariable: "", mode: "simplify"}
             }
         ))
     }
 
-    const updateCell = (key: string, expression: string, mode: string) => {
+    const updateCell = (key: string, expression: string, derivationVariable: string, mode: string) => {
         setCells((prev) => {
             const next = { ...prev }
-            next[key] = {expression: expression, mode: mode}
+            next[key] = {expression: expression, derivationVariable: derivationVariable, mode: mode}
             return next
         })
     }
@@ -62,10 +73,14 @@ export function useChat() {
         await engineSimplifyMutation.mutateAsync({ key, expression })
     }
 
-    const engineAction = async (key: string, expression: string, mode: string) => {
+    const engineDerive = async (key: string, expression: string, derivationVariable: string) => {
+        await engineDeriveMutation.mutateAsync({ key, expression, derivationVariable })
+    }
+
+    const engineAction = async (key: string, expression: string, derivationVariable: string, mode: string) => {
         if (mode === "simplify") await engineSimplify(key, expression)
 
-        if (mode === "derive") console.log("derive")//Todo
+        if (mode === "derive") await engineDerive(key, expression, derivationVariable)
     }
 
     const renderedCells = Object.fromEntries(

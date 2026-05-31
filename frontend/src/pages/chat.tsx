@@ -49,10 +49,12 @@ export default function Chat() {
                         <CardContent className="flex flex-col gap-4">
                             <div className="flex flex-row gap-4">
                                 <Input
+                                    value={cell.expression}
                                     onChange={(e) =>
                                         updateCell(
                                             key,
                                             e.target.value,
+                                            cell.derivationVariable,
                                             cell.mode,
                                         )
                                     }
@@ -62,6 +64,7 @@ export default function Chat() {
                                         engineAction(
                                             key,
                                             cell.expression,
+                                            cell.derivationVariable,
                                             cell.mode,
                                         )
                                     }
@@ -75,16 +78,39 @@ export default function Chat() {
                                 value={cell.mode}
                                 onValueChange={(value) => {
                                     if (value)
-                                        updateCell(key, cell.expression, value);
+                                        updateCell(
+                                            key,
+                                            cell.expression,
+                                            cell.derivationVariable,
+                                            value,
+                                        );
                                 }}
                             >
                                 <ToggleGroupItem value="simplify">
                                     Simplifier
                                 </ToggleGroupItem>
                                 <ToggleGroupItem value="derive">
-                                    Dériver (Soon)
+                                    Dériver
                                 </ToggleGroupItem>
                             </ToggleGroup>
+                            {cell.mode === "derive" ? (
+                                <div className="flex flex-row items-center gap-4">
+                                    <p className="whitespace-nowrap">
+                                        Dériver par rapport à :
+                                    </p>
+                                    <Input
+                                        value={cell.derivationVariable}
+                                        onChange={(e) =>
+                                            updateCell(
+                                                key,
+                                                cell.expression,
+                                                e.target.value,
+                                                cell.mode,
+                                            )
+                                        }
+                                    ></Input>
+                                </div>
+                            ) : null}
                             <h1 className="text-lg">Expression :</h1>
                             <div className="text-lg text-center">
                                 <ReactMarkdown

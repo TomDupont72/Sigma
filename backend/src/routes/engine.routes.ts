@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { EngineDisplayBody, EngineSimplifyBody } from "../types/engine.types.js";
-import { apiEngineDisplay, apiEngineSimplify } from "../services/engine.service.js";
+import { EngineDeriveBody, EngineDisplayBody, EngineSimplifyBody } from "../types/engine.types.js";
+import { apiDeriveSimplify, apiEngineDisplay, apiEngineSimplify } from "../services/engine.service.js";
 import { execFile } from "child_process";
 import { promisify } from "util";
 
@@ -24,6 +24,17 @@ export async function engineRoutes(fastify: FastifyInstance) {
             const { expression } = request.body as EngineSimplifyBody;
 
             const data = await apiEngineSimplify(expression);
+
+            return reply.send({ data })
+        }
+    )
+
+    fastify.post(
+        "/derive",
+        async (request: FastifyRequest, reply: FastifyReply) => {
+            const { expression, derivationVariable } = request.body as EngineDeriveBody;
+
+            const data = await apiDeriveSimplify(expression, derivationVariable);
 
             return reply.send({ data })
         }

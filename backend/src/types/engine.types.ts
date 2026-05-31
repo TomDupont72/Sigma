@@ -3,3 +3,8 @@ export type EngineDisplayBody = {
 }
 
 export type EngineSimplifyBody = EngineDisplayBody
+
+export type EngineDeriveBody = {
+    expression: string,
+    derivationVariable: string
+}

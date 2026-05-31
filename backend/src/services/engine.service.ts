@@ -22,3 +22,13 @@ export async function apiEngineSimplify(expression: string) {
 
     return { expressionLatex: stdout }
 }
+
+export async function apiDeriveSimplify(expression: string, derivationVariable: string) {
+    console.log(expression, derivationVariable)
+    const { stdout } = await execFileAsync(
+        `${ENGINE_PATH}/app`,
+        ["derive", expression, derivationVariable]
+    );
+
+    return { expressionLatex: stdout }
+}
