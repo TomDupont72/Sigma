@@ -121,6 +121,11 @@ string displayExpression(Node *node, int parentPriority)
         res = "\\displaystyle\\prod_{" + node->children[0]->value + "=" + displayExpression(node->children[1], 0) + "}^{" + displayExpression(node->children[2], 0) + "}" + displayExpression(node->children[3], 0);
     }
 
+    else if (node->value == "binom")
+    {
+        res = "\\displaystyle\\binom{" + displayExpression(node->children[0], 0) + "}{" + displayExpression(node->children[1], 0) + "}";
+    }
+
     else if (node->children.size() == 1)
     {
         res = node->value + "\\left(" + displayExpression(node->children[0], 0) + "\\right)";

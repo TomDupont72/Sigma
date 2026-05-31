@@ -19,3 +19,5 @@ void printTree(Node *node, string prefix = "", bool isLast = true);
 float operation(float a, float b, string value);
 
 vector<Node *> copyWithoutIndex(const vector<Node *> &children, int indexToRemove);
+
+int binom(int n, int k);

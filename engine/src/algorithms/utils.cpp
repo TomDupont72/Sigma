@@ -119,3 +119,24 @@ vector<Node *> copyWithoutIndex(const vector<Node *> &children, int indexToRemov
 
     return result;
 }
+
+int binom(int n, int k)
+{
+    if (k < 0 || k > n)
+        return 0;
+
+    if (k == 0 || k == n)
+        return 1;
+
+    if (k > n - k)
+        k = n - k;
+
+    int result = 1;
+
+    for (int i = 1; i <= k; i++)
+    {
+        result = result * (n - k + i) / i;
+    }
+
+    return result;
+}

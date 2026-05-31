@@ -388,5 +388,13 @@ Node *applyRewriteRules(Node *node)
         }
     }
 
+    if (node->value == "binom")
+    {
+        if (isNumber(node->children[0]->value) && isNumber(node->children[1]->value))
+        {
+            return new Node(numberToString(binom(stof(node->children[0]->value), stof(node->children[1]->value))), {});
+        }
+    }
+
     return node;
 }

@@ -57,4 +57,4 @@ inline map<string, string> neutralElement =
 
 inline set<string> operations = {"+", "*", "^"};
 
-inline set<string> identifiers = {"ln", "exp", "sum", "prod"};
+inline set<string> identifiers = {"ln", "exp", "sum", "prod", "binom"};
