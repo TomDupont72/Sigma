@@ -65,8 +65,15 @@ string displayExpression(Node *node, int parentPriority)
             }
         }
 
+        int negativeFactors = 0;
+
         for (Node *child : numeratorNodes)
-            numeratorParts.push_back(displayExpression(child, denominatorParts.empty() ? priority(node) : 0));
+        {
+            if (child->children.empty() && child->value == "-1")
+                negativeFactors++;
+            else
+                numeratorParts.push_back(displayExpression(child, denominatorParts.empty() ? priority(node) : 0));
+        }
 
         if (numeratorParts.empty())
             numeratorParts.push_back("1");
@@ -75,6 +82,9 @@ string displayExpression(Node *node, int parentPriority)
             res = join(numeratorParts, "");
         else
             res = "\\displaystyle\\frac{" + join(numeratorParts, "") + "}{" + join(denominatorParts, "") + "}";
+
+        if (negativeFactors % 2 == 1)
+            res = "-" + res;
     }
 
     else if (node->value == "^")
