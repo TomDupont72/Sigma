@@ -19,6 +19,10 @@ Node *derive(Node *node, string variable)
         node = deriveLn(node, variable);
     else if (node->value == "exp")
         node = deriveExp(node, variable);
+    else if (node->value == "sin")
+        node = deriveSin(node, variable);
+    else if (node->value == "cos")
+        node = deriveCos(node, variable);
     else
         node = deriveIdentifier(node, variable);
 
@@ -80,4 +84,14 @@ Node *deriveLn(Node *node, string variable)
 Node *deriveExp(Node *node, string variable)
 {
     return new Node("*", {derive(node->children[0], variable), node});
+}
+
+Node *deriveSin(Node *node, string variable)
+{
+    return new Node("*", {derive(node->children[0], variable), new Node("cos", {node->children[0]})});
+}
+
+Node *deriveCos(Node *node, string variable)
+{
+    return new Node("*", {derive(node->children[0], variable), new Node("*", {new Node("-1", {}), new Node("sin", {node->children[0]})})});
 }

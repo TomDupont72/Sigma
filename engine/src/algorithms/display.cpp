@@ -111,6 +111,16 @@ string displayExpression(Node *node, int parentPriority)
         res = "\\textup{e}^{" + displayExpression(node->children[0], 0) + "}";
     }
 
+    else if (node->value == "cos")
+    {
+        res = "\\textup{cos}\\left(" + displayExpression(node->children[0], 0) + "\\right)";
+    }
+
+    else if (node->value == "sin")
+    {
+        res = "\\textup{sin}\\left(" + displayExpression(node->children[0], 0) + "\\right)";
+    }
+
     else if (node->value == "sum")
     {
         res = "\\displaystyle\\sum_{" + node->children[0]->value + "=" + displayExpression(node->children[1], 0) + "}^{" + displayExpression(node->children[2], 0) + "}" + displayExpression(node->children[3], 0);

@@ -19,3 +19,7 @@ Node *derivePower(Node *node, string variable);
 Node *deriveLn(Node *node, string variable);
 
 Node *deriveExp(Node *node, string variable);
+
+Node *deriveSin(Node *node, string variable);
+
+Node *deriveCos(Node *node, string variable);
