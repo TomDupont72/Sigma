@@ -15,3 +15,7 @@ Node *derivePlus(Node *node, string variable);
 Node *deriveMultiply(Node *node, string variable);
 
 Node *derivePower(Node *node, string variable);
+
+Node *deriveLn(Node *node, string variable);
+
+Node *deriveExp(Node *node, string variable);

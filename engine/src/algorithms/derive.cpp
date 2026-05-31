@@ -15,6 +15,10 @@ Node *derive(Node *node, string variable)
         node = derivePower(node, variable);
     else if (isNumber(node->value))
         node = deriveNumber(node);
+    else if (node->value == "ln")
+        node = deriveLn(node, variable);
+    else if (node->value == "exp")
+        node = deriveExp(node, variable);
     else
         node = deriveIdentifier(node, variable);
 
@@ -66,4 +70,14 @@ Node *derivePower(Node *node, string variable)
     Node *secondTerm = new Node("*", {node->children[1], derive(node->children[0], variable), new Node("^", {node->children[0], new Node("-1", {})})});
 
     return new Node("*", {new Node("+", {firstTerm, secondTerm}), node});
+}
+
+Node *deriveLn(Node *node, string variable)
+{
+    return new Node("*", {derive(node->children[0], variable), new Node("^", {node->children[0], new Node("-1", {})})});
+}
+
+Node *deriveExp(Node *node, string variable)
+{
+    return new Node("*", {derive(node->children[0], variable), node});
 }
