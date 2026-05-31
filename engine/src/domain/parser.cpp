@@ -114,6 +114,10 @@ Node *Parser::parseFactor()
 
             return new Node(name, arguments);
         }
+        else
+        {
+            return new Node(name, {});
+        }
 
         return new Node(name, {});
     }

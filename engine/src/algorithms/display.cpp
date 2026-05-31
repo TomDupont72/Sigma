@@ -10,10 +10,7 @@ string displayExpression(Node *node, int parentPriority)
 {
     string res = "";
 
-    if (node->children.empty())
-        return node->value;
-
-    else if (node->value == "+")
+    if (node->value == "+")
     {
         vector<string> parts;
 
@@ -135,6 +132,14 @@ string displayExpression(Node *node, int parentPriority)
     {
         res = "\\displaystyle\\binom{" + displayExpression(node->children[0], 0) + "}{" + displayExpression(node->children[1], 0) + "}";
     }
+
+    else if (node->value == "pi")
+    {
+        res = "\\pi";
+    }
+
+    else if (node->children.empty())
+        return node->value;
 
     else if (node->children.size() == 1)
     {
