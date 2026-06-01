@@ -72,7 +72,7 @@ string displayExpression(Node *node, int parentPriority)
             if (child->children.empty() && child->value == "-1")
                 negativeFactors++;
             else
-                numeratorParts.push_back(displayExpression(child, denominatorParts.empty() ? priority(node) : 0));
+                numeratorParts.push_back(displayExpression(child, priority(node)));
         }
 
         if (numeratorParts.empty())
