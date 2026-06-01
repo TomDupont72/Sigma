@@ -19,6 +19,8 @@ tuple<map<string, float>, map<string, Node *>, float> createMappings(vector<Node
 
 tuple<map<string, float>, map<string, Node *>, float> createProductMappings(vector<Node *> terms, string value);
 
+vector<Node *> combineProductPowers(vector<Node *> children);
+
 tuple<Node *, Node *> createPowerMapping(Node *node);
 
 vector<Node *> constructChildren(map<string, float> sumMapping, map<string, Node *> symbolicMapping, float sumNumber, string value);

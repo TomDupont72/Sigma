@@ -70,6 +70,7 @@ Node *simplifyOperation(Node *node, string value)
     {
         auto [mapping, symbolicMapping, number] = createProductMappings(terms, nextValue[value]);
         resChildren = constructPowerChildren(mapping, symbolicMapping, number);
+        resChildren = combineProductPowers(resChildren);
     }
 
     if (node->value == "^")
@@ -88,6 +89,65 @@ Node *simplifyOperation(Node *node, string value)
         node->children = resChildren;
 
     return node;
+}
+
+vector<Node *> combineProductPowers(vector<Node *> children)
+{
+    map<string, Node *> bases;
+    map<string, vector<Node *>> exponents;
+    vector<string> baseOrder;
+    vector<Node *> resChildren;
+
+    for (Node *child : children)
+    {
+        if (child->children.empty() && isNumber(child->value))
+        {
+            resChildren.push_back(child);
+            continue;
+        }
+
+        Node *base = child;
+        Node *exponent = new Node("1", {});
+
+        if (child->value == "^" && child->children.size() == 2)
+        {
+            base = child->children[0];
+            exponent = child->children[1];
+        }
+
+        string key = displayExpression(base, 0);
+
+        if (!bases.contains(key))
+        {
+            bases[key] = base;
+            baseOrder.push_back(key);
+        }
+
+        exponents[key].push_back(exponent);
+    }
+
+    for (const string &key : baseOrder)
+    {
+        Node *base = bases[key];
+        vector<Node *> exponentTerms = exponents[key];
+
+        if (exponentTerms.size() == 1)
+        {
+            Node *exponent = exponentTerms[0];
+
+            if (exponent->children.empty() && exponent->value == "1")
+                resChildren.push_back(base);
+            else
+                resChildren.push_back(new Node("^", {base, exponent}));
+
+            continue;
+        }
+
+        Node *exponent = new Node("+", exponentTerms);
+        resChildren.push_back(new Node("^", {base, exponent}));
+    }
+
+    return resChildren;
 }
 
 void collectTerms(Node *node, vector<Node *> &terms, string value)
@@ -241,8 +301,6 @@ vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *>
 {
     vector<Node *> resChildren;
 
-    resChildren.push_back(new Node(numberToString(number), {}));
-
     for (const auto &pair : mapping)
     {
         if (symbolicMapping.contains(pair.first))
@@ -262,6 +320,9 @@ vector<Node *> constructChildren(map<string, float> mapping, map<string, Node *>
                 resChildren.push_back(new Node(value, {new Node(numberToString(pair.second), {}), new Node(pair.first, {})}));
         }
     }
+
+    if (number != stof(neutralElement[previousValue[value]]) || resChildren.empty())
+        resChildren.push_back(new Node(numberToString(number), {}));
 
     return resChildren;
 }
