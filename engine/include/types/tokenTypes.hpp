@@ -3,6 +3,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -58,3 +59,10 @@ inline map<string, string> neutralElement =
 inline set<string> operations = {"+", "*", "^"};
 
 inline set<string> identifiers = {"ln", "exp", "cos", "sin", "sum", "prod", "binom", "pi"};
+
+struct SumIndex
+{
+    map<string, int> sinSquaredByArg;
+    map<string, int> cosSquaredByArg;
+    map<string, vector<int>> sumsByVariableAndBody;
+};

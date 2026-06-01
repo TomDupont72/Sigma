@@ -140,3 +140,21 @@ int binom(int n, int k)
 
     return result;
 }
+
+Node *canonicalExpression(Node *node, string boundVariable)
+{
+    if (node->children.empty())
+    {
+        if (node->value == boundVariable)
+            return new Node("#", {});
+
+        return new Node(node->value, {});
+    }
+
+    vector<Node *> canonicalChildren;
+
+    for (Node *child : node->children)
+        canonicalChildren.push_back(canonicalExpression(child, boundVariable));
+
+    return new Node(node->value, canonicalChildren);
+}

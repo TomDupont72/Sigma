@@ -1,5 +1,6 @@
 #pragma once
 
+#include "types/tokenTypes.hpp"
 #include "domain/tree.hpp"
 #include <vector>
 #include <string>
@@ -30,3 +31,11 @@ vector<Node *> constructPowerChildren(map<string, float> mapping, map<string, No
 Node *constructPower(Node *base, Node *exponent);
 
 Node *applyRewriteRules(Node *node);
+
+Node *rewriteSumRules(Node *node);
+
+Node *rewriteTrigIdentity(Node *node, SumIndex index);
+
+Node *rewriteAdjacentSums(Node *node, SumIndex index);
+
+SumIndex buildSumIndex(vector<Node *> terms);
