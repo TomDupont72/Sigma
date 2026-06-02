@@ -8,9 +8,14 @@ SRC = \
 	src/domain/token.cpp \
 	src/domain/parser.cpp \
 	src/algorithms/lexer.cpp \
-	src/algorithms/display.cpp \
-	src/algorithms/simplify.cpp \
-	src/algorithms/derive.cpp \
+	src/algorithms/display/display.cpp \
+	src/algorithms/display/parts.cpp \
+	src/algorithms/simplify/simplify.cpp \
+	src/algorithms/simplify/operations.cpp \
+	src/algorithms/simplify/rewrite_rules.cpp \
+	src/algorithms/simplify/sum_rules.cpp \
+	src/algorithms/derive/derive.cpp \
+	src/algorithms/derive/rules.cpp \
 	src/algorithms/utils.cpp \
 	src/apps/cli/main.cpp
 
