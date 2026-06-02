@@ -76,6 +76,12 @@ Node *applyRewriteRules(Node *node)
         {
             return new Node("*", {node->children[3], new Node("+", {node->children[2], new Node("*", {new Node("-1", {}), node->children[1]}), new Node("1", {})})});
         }
+        if (node->children[3]->value == "^" && node->children[3]->children[1]->value == node->children[0]->value)
+        {
+            Node *numerator = new Node("+", {power(node->children[3]->children[0], node->children[1]), negative(power(node->children[3]->children[0], addConstant(node->children[2], "1")))});
+            Node *denominator = new Node("+", {new Node("1", {}), negative(node->children[3]->children[0])});
+            return new Node("*", {numerator, inverse(denominator)});
+        }
     }
 
     if (node->value == "prod")

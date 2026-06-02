@@ -226,3 +226,23 @@ bool isExactDivision(Node *node, Node *numerator, Node *denominator)
 
     return sameExpression(actualNumerator, numerator);
 }
+
+Node *negative(Node *node)
+{
+    return new Node("*", {new Node("-1", {}), node});
+}
+
+Node *inverse(Node *node)
+{
+    return new Node("^", {node, new Node("-1", {})});
+}
+
+Node *power(Node *nodeBase, Node *nodeExponent)
+{
+    return new Node("^", {nodeBase, nodeExponent});
+}
+
+Node *addConstant(Node *node, string constant)
+{
+    return new Node("+", {node, new Node(constant, {})});
+}

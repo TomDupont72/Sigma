@@ -27,3 +27,11 @@ Node *canonicalExpression(Node *node, string boundVariable);
 bool isInverseOf(Node *node, Node *base);
 
 bool isExactDivision(Node *node, Node *numerator, Node *denominator);
+
+Node *negative(Node *node);
+
+Node *inverse(Node *node);
+
+Node *power(Node *nodeBase, Node *nodeExponent);
+
+Node *addConstant(Node *node, string constant);
