@@ -72,3 +72,8 @@ Node *deriveCos(Node *node, string variable)
 {
     return new Node("*", {derive(node->children[0], variable), new Node("*", {new Node("-1", {}), new Node("sin", {node->children[0]})})});
 }
+
+Node *deriveSum(Node *node, string variable)
+{
+    return new Node("sum", {node->children[0], node->children[1], node->children[2], derive(node->children[3], variable)});
+}

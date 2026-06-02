@@ -22,3 +22,5 @@ Node *deriveExp(Node *node, string variable);
 Node *deriveSin(Node *node, string variable);
 
 Node *deriveCos(Node *node, string variable);
+
+Node *deriveSum(Node *node, string variable);

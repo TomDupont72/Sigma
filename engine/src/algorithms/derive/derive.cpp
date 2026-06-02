@@ -23,6 +23,8 @@ Node *derive(Node *node, string variable)
         node = deriveSin(node, variable);
     else if (node->value == "cos")
         node = deriveCos(node, variable);
+    else if (node->value == "sum")
+        node = deriveSum(node, variable);
     else
         node = deriveIdentifier(node, variable);
 
