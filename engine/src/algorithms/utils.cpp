@@ -158,3 +158,71 @@ Node *canonicalExpression(Node *node, string boundVariable)
 
     return new Node(node->value, canonicalChildren);
 }
+
+bool sameExpression(Node *left, Node *right)
+{
+    if (left->value != right->value || left->children.size() != right->children.size())
+        return false;
+
+    for (size_t i = 0; i < left->children.size(); i++)
+    {
+        if (!sameExpression(left->children[i], right->children[i]))
+            return false;
+    }
+
+    return true;
+}
+
+bool isInverseOf(Node *node, Node *base)
+{
+    return node->value == "^" &&
+           node->children.size() == 2 &&
+           sameExpression(node->children[0], base) &&
+           node->children[1]->children.empty() &&
+           node->children[1]->value == "-1";
+}
+
+bool isExactDivision(Node *node, Node *numerator, Node *denominator)
+{
+    bool numeratorIsOne = numerator->children.empty() && numerator->value == "1";
+
+    if (isInverseOf(node, denominator))
+        return numeratorIsOne;
+
+    if (node->value != "*")
+        return false;
+
+    vector<Node *> numeratorFactors;
+    bool foundDenominator = false;
+
+    for (Node *child : node->children)
+    {
+        if (child->children.empty() && child->value == "1")
+            continue;
+
+        if (isInverseOf(child, denominator))
+        {
+            if (foundDenominator)
+                return false;
+
+            foundDenominator = true;
+            continue;
+        }
+
+        numeratorFactors.push_back(child);
+    }
+
+    if (!foundDenominator)
+        return false;
+
+    Node *actualNumerator;
+
+    if (numeratorFactors.empty())
+        actualNumerator = new Node("1", {});
+    else if (numeratorFactors.size() == 1)
+        actualNumerator = numeratorFactors[0];
+    else
+        actualNumerator = new Node("*", numeratorFactors);
+
+    return sameExpression(actualNumerator, numerator);
+}

@@ -23,3 +23,7 @@ vector<Node *> copyWithoutIndex(const vector<Node *> &children, int indexToRemov
 int binom(int n, int k);
 
 Node *canonicalExpression(Node *node, string boundVariable);
+
+bool isInverseOf(Node *node, Node *base);
+
+bool isExactDivision(Node *node, Node *numerator, Node *denominator);

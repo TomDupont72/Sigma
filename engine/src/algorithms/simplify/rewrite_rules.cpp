@@ -50,16 +50,24 @@ Node *applyRewriteRules(Node *node)
     {
         if (node->children[0]->value == "0")
             return new Node("0", {});
+        if (isExactDivision(node->children[0], new Node("pi", {}), new Node("2", {})))
+            return new Node("1", {});
         if (node->children[0]->value == "pi")
             return new Node("0", {});
+        if (isExactDivision(node->children[0], new Node("*", {new Node("3", {}), new Node("pi", {})}), new Node("2", {})))
+            return new Node("-1", {});
     }
 
     if (node->value == "cos")
     {
         if (node->children[0]->value == "0")
             return new Node("1", {});
+        if (isExactDivision(node->children[0], new Node("pi", {}), new Node("2", {})))
+            return new Node("0", {});
         if (node->children[0]->value == "pi")
             return new Node("-1", {});
+        if (isExactDivision(node->children[0], new Node("*", {new Node("3", {}), new Node("pi", {})}), new Node("2", {})))
+            return new Node("0", {});
     }
 
     if (node->value == "sum")

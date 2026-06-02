@@ -55,11 +55,6 @@ Node *rewriteTrigIdentity(Node *node, SumIndex index)
     return nullptr;
 }
 
-bool sameExpression(Node *left, Node *right)
-{
-    return displayExpression(left, 0) == displayExpression(right, 0);
-}
-
 bool isSuccessor(Node *candidate, Node *base)
 {
     if (candidate->value == "+" && candidate->children.size() == 2)
@@ -67,10 +62,10 @@ bool isSuccessor(Node *candidate, Node *base)
         bool firstIsOne = candidate->children[0]->children.empty() && candidate->children[0]->value == "1";
         bool secondIsOne = candidate->children[1]->children.empty() && candidate->children[1]->value == "1";
 
-        if (firstIsOne && sameExpression(candidate->children[1], base))
+        if (firstIsOne && displayExpression(candidate->children[1], 0) == displayExpression(base, 0))
             return true;
 
-        if (secondIsOne && sameExpression(candidate->children[0], base))
+        if (secondIsOne && displayExpression(candidate->children[0], 0) == displayExpression(base, 0))
             return true;
     }
 
