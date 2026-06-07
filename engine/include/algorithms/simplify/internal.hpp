@@ -40,3 +40,5 @@ SumIndex buildSumIndex(vector<Node *> terms);
 ProductIndex buildProductIndex(vector<Node *> terms);
 
 Node *rewriteAdjacentProducts(Node *node, ProductIndex index);
+
+Node *rewriteProductsRules(Node *node);

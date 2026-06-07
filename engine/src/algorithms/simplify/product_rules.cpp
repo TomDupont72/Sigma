@@ -7,6 +7,18 @@
 
 using namespace std;
 
+Node *rewriteProductsRules(Node *node)
+{
+    vector<Node *> terms = node->children;
+
+    ProductIndex index = buildProductIndex(terms);
+
+    if (Node *res = rewriteAdjacentProducts(node, index))
+        return res;
+
+    return node;
+}
+
 bool isSuccessor(Node *candidate, Node *base)
 {
     if (candidate->value == "+" && candidate->children.size() == 2)
