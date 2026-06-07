@@ -22,6 +22,8 @@ Node *applyRewriteRules(Node *node)
     {
         if ((node->children[0])->value == "0")
             return new Node("0", {});
+        if (Node *res = rewriteProductRules(node))
+            return res;
     }
 
     if (node->value == "^")

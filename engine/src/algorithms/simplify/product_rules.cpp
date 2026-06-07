@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Node *rewriteProductsRules(Node *node)
+Node *rewriteProductRules(Node *node)
 {
     vector<Node *> terms = node->children;
 
