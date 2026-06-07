@@ -14,6 +14,7 @@ SRC = \
 	src/algorithms/simplify/operations.cpp \
 	src/algorithms/simplify/rewrite_rules.cpp \
 	src/algorithms/simplify/sum_rules.cpp \
+	src/algorithms/simplify/product_rules.cpp \
 	src/algorithms/derive/derive.cpp \
 	src/algorithms/derive/rules.cpp \
 	src/algorithms/utils.cpp \

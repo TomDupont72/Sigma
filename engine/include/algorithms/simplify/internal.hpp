@@ -31,6 +31,8 @@ Node *applyRewriteRules(Node *node);
 
 Node *rewriteSumRules(Node *node);
 
+bool isSuccessor(Node *candidate, Node *base);
+
 Node *rewriteTrigIdentity(Node *node, SumIndex index);
 
 Node *rewriteAdjacentSums(Node *node, SumIndex index);

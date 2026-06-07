@@ -19,26 +19,6 @@ Node *rewriteProductRules(Node *node)
     return node;
 }
 
-bool isSuccessor(Node *candidate, Node *base)
-{
-    if (candidate->value == "+" && candidate->children.size() == 2)
-    {
-        bool firstIsOne = candidate->children[0]->children.empty() && candidate->children[0]->value == "1";
-        bool secondIsOne = candidate->children[1]->children.empty() && candidate->children[1]->value == "1";
-
-        if (firstIsOne && displayExpression(candidate->children[1], 0) == displayExpression(base, 0))
-            return true;
-
-        if (secondIsOne && displayExpression(candidate->children[0], 0) == displayExpression(base, 0))
-            return true;
-    }
-
-    if (candidate->children.empty() && base->children.empty() && isNumber(candidate->value) && isNumber(base->value))
-        return stof(candidate->value) == stof(base->value) + 1;
-
-    return false;
-}
-
 Node *rewriteAdjacentProducts(Node *node, ProductIndex index)
 {
     for (const auto &pair : index.productsByVariableAndBody)
@@ -81,7 +61,7 @@ Node *rewriteAdjacentProducts(Node *node, ProductIndex index)
                 else
                     continue;
 
-                Node *merged = new Node("product", {mergedVariable, mergedStart, mergedEnd, mergedBody});
+                Node *merged = new Node("prod", {mergedVariable, mergedStart, mergedEnd, mergedBody});
                 vector<Node *> newChildren;
 
                 for (size_t k = 0; k < node->children.size(); k++)
@@ -97,7 +77,7 @@ Node *rewriteAdjacentProducts(Node *node, ProductIndex index)
                 if (newChildren.size() == 1)
                     return newChildren[0];
 
-                return new Node("+", newChildren);
+                return new Node("*", newChildren);
             }
         }
     }
