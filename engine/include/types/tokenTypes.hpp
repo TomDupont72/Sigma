@@ -66,3 +66,8 @@ struct SumIndex
     map<string, int> cosSquaredByArg;
     map<string, vector<int>> sumsByVariableAndBody;
 };
+
+struct ProductIndex
+{
+    map<string, vector<int>> productsByVariableAndBody;
+};
