@@ -246,3 +246,24 @@ Node *addConstant(Node *node, string constant)
 {
     return new Node("+", {node, new Node(constant, {})});
 }
+
+vector<string> split(string value, char separator)
+{
+    vector<string> result;
+    string current = "";
+
+    for (char c : value)
+    {
+        if (c == separator)
+        {
+            result.push_back(current);
+            current = "";
+        }
+        else
+            current += c;
+    }
+
+    result.push_back(current);
+
+    return result;
+}

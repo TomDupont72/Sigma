@@ -35,3 +35,5 @@ Node *inverse(Node *node);
 Node *power(Node *nodeBase, Node *nodeExponent);
 
 Node *addConstant(Node *node, string constant);
+
+vector<string> split(string value, char separator);

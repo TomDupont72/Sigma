@@ -19,6 +19,9 @@ Node *rewriteSumRules(Node *node)
     if (Node *res = rewriteAdjacentSums(node, index))
         return res;
 
+    if (Node *res = rewriteBinomialCoefficient(node, index))
+        return res;
+
     return node;
 }
 
@@ -57,6 +60,8 @@ Node *rewriteTrigIdentity(Node *node, SumIndex index)
 
 bool isSuccessor(Node *candidate, Node *base)
 {
+    string candidateKey = displayExpression(candidate, 0);
+
     if (candidate->value == "+" && candidate->children.size() == 2)
     {
         bool firstIsOne = candidate->children[0]->children.empty() && candidate->children[0]->value == "1";
@@ -66,6 +71,25 @@ bool isSuccessor(Node *candidate, Node *base)
             return true;
 
         if (secondIsOne && displayExpression(candidate->children[0], 0) == displayExpression(base, 0))
+            return true;
+    }
+
+    if (base->value == "+")
+    {
+        bool hasCandidate = false;
+        float numericOffset = 0;
+
+        for (Node *child : base->children)
+        {
+            if (child->children.empty() && isNumber(child->value))
+                numericOffset += stof(child->value);
+            else if (displayExpression(child, 0) == candidateKey)
+                hasCandidate = true;
+            else
+                return false;
+        }
+
+        if (hasCandidate && numericOffset == -1)
             return true;
     }
 
@@ -141,6 +165,65 @@ Node *rewriteAdjacentSums(Node *node, SumIndex index)
     return nullptr;
 }
 
+Node *rewriteBinomialCoefficient(Node *node, SumIndex index)
+{
+    if (index.binomCoef.empty())
+        return nullptr;
+
+    for (size_t i = 0; i < node->children.size(); i++)
+    {
+        Node *first = node->children[i];
+
+        if (first->value != "binom" || first->children.size() != 2)
+            continue;
+
+        for (size_t j = i + 1; j < node->children.size(); j++)
+        {
+            Node *second = node->children[j];
+
+            if (second->value != "binom" || second->children.size() != 2)
+                continue;
+
+            Node *firstUpper = first->children[0];
+            Node *firstLower = first->children[1];
+            Node *secondUpper = second->children[0];
+            Node *secondLower = second->children[1];
+
+            if (displayExpression(firstUpper, 0) != displayExpression(secondUpper, 0))
+                continue;
+
+            Node *mergedLower = nullptr;
+
+            if (isSuccessor(secondLower, firstLower))
+                mergedLower = secondLower;
+            else if (isSuccessor(firstLower, secondLower))
+                mergedLower = firstLower;
+            else
+                continue;
+
+            Node *merged = new Node("binom", {addConstant(firstUpper, "1"), mergedLower});
+            vector<Node *> newChildren;
+
+            for (size_t k = 0; k < node->children.size(); k++)
+            {
+                if (k == i || k == j)
+                    continue;
+
+                newChildren.push_back(node->children[k]);
+            }
+
+            newChildren.push_back(merged);
+
+            if (newChildren.size() == 1)
+                return newChildren[0];
+
+            return new Node("+", newChildren);
+        }
+    }
+
+    return nullptr;
+}
+
 SumIndex buildSumIndex(vector<Node *> terms)
 {
     SumIndex index;
@@ -177,6 +260,16 @@ SumIndex buildSumIndex(vector<Node *> terms)
             string key = "#|" + displayExpression(canonicalExpression(body, variable->value), 0);
 
             index.sumsByVariableAndBody[key].push_back(i);
+        }
+
+        if (term->value == "binom")
+        {
+            string upper = displayExpression(term->children[0], 0);
+            string lower = displayExpression(term->children[1], 0);
+
+            string key = upper + "|" + lower;
+
+            index.binomCoef[key] = i;
         }
     }
 

@@ -37,6 +37,8 @@ Node *rewriteTrigIdentity(Node *node, SumIndex index);
 
 Node *rewriteAdjacentSums(Node *node, SumIndex index);
 
+Node *rewriteBinomialCoefficient(Node *node, SumIndex index);
+
 SumIndex buildSumIndex(vector<Node *> terms);
 
 ProductIndex buildProductIndex(vector<Node *> terms);

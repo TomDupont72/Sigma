@@ -65,6 +65,7 @@ struct SumIndex
     map<string, int> sinSquaredByArg;
     map<string, int> cosSquaredByArg;
     map<string, vector<int>> sumsByVariableAndBody;
+    map<string, int> binomCoef;
 };
 
 struct ProductIndex

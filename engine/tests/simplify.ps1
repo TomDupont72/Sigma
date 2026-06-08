@@ -130,6 +130,21 @@ $tests = @(
         Name = "different sum bodies are not merged"
         Args = @("simplify", "sum(i,m,n,i^2)+sum(j,n+1,l,j^3)")
         Expected = "\displaystyle\sum_{i=m}^{n}i^{2}+\displaystyle\sum_{j=n+1}^{l}j^{3}"
+    },
+    @{
+        Name = "pascal binomial identity"
+        Args = @("simplify", "binom(n,k)+binom(n,k+1)")
+        Expected = "\displaystyle\binom{n+1}{k+1}"
+    },
+    @{
+        Name = "pascal binomial identity reversed with extra term"
+        Args = @("simplify", "a+binom(n,k+1)+binom(n,k)")
+        Expected = "\displaystyle\binom{n+1}{k+1}+a"
+    },
+    @{
+        Name = "pascal binomial identity with previous indexes"
+        Args = @("simplify", "binom(n-1,k-1)+binom(n-1,k)")
+        Expected = "\displaystyle\binom{n}{k}"
     }
 )
 
